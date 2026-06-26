@@ -71,6 +71,10 @@
     .section-head h2 { margin: 0 0 3px; }
     .section-head p { margin: 0; color: #667085; font-size: 13px; }
     .public-local-card { border-style: dashed; }
+    .public-watch-message { display: grid; gap: 6px; align-content: start; border: 1px dashed #fdb022; border-radius: 14px; padding: 14px; background: #fffbeb; color: #7a2e0e; }
+    .public-watch-message strong { color: #92400e; font-size: 18px; }
+    .public-watch-message p, .public-watch-message small { margin: 0; line-height: 1.45; }
+    .public-watch-message small { color: #a15c07; }
     .pill { display: inline-block; border-radius: 999px; padding: 4px 8px; font-size: 12px; font-weight: 800; }
     .pill.hold { background: #eef2f6; color: #344054; }
     .pill.buy { background: #d1fadf; color: #05603a; box-shadow: 0 0 0 4px rgba(18, 183, 106, .12); }
@@ -689,6 +693,14 @@
       background: rgba(15,23,42,.58);
       border-radius: 14px;
     }
+    .public-watch-message {
+      border-color: rgba(251,191,36,.32);
+      background: linear-gradient(135deg, rgba(69,38,10,.68), rgba(15,23,42,.7));
+      color: var(--text);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .public-watch-message strong { color: #fde68a; }
+    .public-watch-message small { color: var(--muted); }
     .quotegrid span, .keygrid span, .strategybar span, .points span { color: var(--muted); }
     .quotegrid b, .keygrid b, .strategybar b, .points b { color: var(--text); }
     .keygrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -846,24 +858,24 @@
       
     </header>
     <div class="banner">公开只读版：只做观察和复盘，不会执行真实交易。</div>
-    <section class="hero-dashboard wait" aria-label="今日驾驶舱"><div class="hero-copy"><span class="eyebrow">今日结论</span><h2>暂时没有强买点，已有仓先守止损。</h2><p>重点看每张卡里的止损价。</p></div><div class="kpi-grid"><article class="kpi-card risk-kpi"><span>当前风险</span><strong>中性 · 风险0/5</strong><p>风险词：利好、加息、反弹</p></article><article class="kpi-card"><span>监控数量</span><strong>8 只</strong><p>公开页面不会改主监控列表。</p></article><article class="kpi-card position-count-card" id="positionCountCard"><span>我的持仓</span><strong>0 只</strong><p>还没有记录入场。可在下方输入股票代码或名称，记录后会自动计算当前账面盈亏。</p></article><article class="kpi-card position-summary-card" id="positionSummaryCard"><span>当前总浮盈/浮亏</span><strong>暂无持仓</strong><p>记录入场价后，这里会显示总浮盈/浮亏。</p><div class="position-summary-grid"><div><b>0</b><em>已记录</em></div><div><b>--</b><em>当前账面结果</em></div><div><b>0</b><em>接近止损</em></div><div><b>0</b><em>接近目标</em></div></div></article></div></section>
+    <section class="hero-dashboard wait" aria-label="今日驾驶舱"><div class="hero-copy"><span class="eyebrow">今日结论</span><h2>暂时没有强买点，已有仓先守止损。</h2><p>重点看每张卡里的止损价。</p></div><div class="kpi-grid"><article class="kpi-card risk-kpi"><span>当前风险</span><strong>中性 · 风险-1/5</strong><p>风险词：利好、加息、反弹</p></article><article class="kpi-card"><span>监控数量</span><strong>8 只</strong><p>公开页面不会改主监控列表。</p></article><article class="kpi-card position-count-card" id="positionCountCard"><span>我的持仓</span><strong>0 只</strong><p>还没有记录入场。可在下方输入股票代码或名称，记录后会自动计算当前账面盈亏。</p></article><article class="kpi-card position-summary-card" id="positionSummaryCard"><span>当前总浮盈/浮亏</span><strong>暂无持仓</strong><p>记录入场价后，这里会显示总浮盈/浮亏。</p><div class="position-summary-grid"><div><b>0</b><em>已记录</em></div><div><b>--</b><em>当前账面结果</em></div><div><b>0</b><em>接近止损</em></div><div><b>0</b><em>接近目标</em></div></div></article></div></section>
     <section class="position-workspace" id="positionWorkspace" aria-label="马董持仓记录窗口"><div class="workspace-head"><div><span class="eyebrow">本地记录</span><h2>马董持仓记录窗口</h2><p>输入当前监控里的股票代码或名称，记录后只保存在当前浏览器。</p></div><div class="workspace-badge">不会同步给其他人</div></div><div class="position-search-row"><label class="search-field">股票搜索<input id="positionSearchInput" type="search" autocomplete="off" placeholder="输入股票代码或名称，例如 000001、平安银行、贵州茅台"></label><div class="selected-stock-card" id="positionSelectedCard"><span>当前选择</span><strong id="positionSelectedText">还未选择股票</strong><p id="positionSelectedMeta">先输入代码或名称，系统会从当前监控列表里匹配。</p></div></div><div class="match-list" id="positionMatchList" hidden></div><form id="positionRecordForm" class="position-record-form" autocomplete="off" novalidate><div class="position-form-grid"><label>入场价<input name="entryPrice" inputmode="decimal" placeholder="例如 10.50" required disabled></label><label>持仓数量<input name="quantity" inputmode="decimal" placeholder="例如 1000，可不填" disabled></label><label>计划出场价<input name="plannedExitPrice" inputmode="decimal" placeholder="例如 11.20" disabled></label><label>止损价<input name="stopLossPrice" inputmode="decimal" placeholder="例如 10.00" disabled></label><label class="note-field">备注<input name="note" placeholder="可选，例如分批记录、复盘原因" disabled></label></div><div class="entry-date-summary" id="positionEntryDateRow"><span>入场日期：<b id="positionEntryDateDisplay">今天 --</b></span><button type="button" class="date-toggle" id="positionDateToggle" disabled>修改日期</button></div><label class="entry-date-editor" id="positionDateField" hidden>入场日期<input name="entryDate" type="date" disabled></label><div class="workspace-actions"><button type="submit" disabled>保存本地持仓</button><button type="button" class="ghost" id="positionClearButton" disabled>清空</button><button type="button" class="danger" id="positionDeleteButton" disabled>删除这只股票的本地记录</button></div><p class="workspace-help" id="positionWindowStatus" role="status" aria-live="polite">当前还没有选择股票。当前盈亏为粗略估算，暂未计算手续费、税费和滑点。</p></form></section>
-    <section class="controlcenter readonly public-live"><div class="control-copy"><span>加股票</span><h2>输入代码，先放进本页观察。</h2><p>公开页面不会改主监控列表。别人输入的代码只存在他自己的浏览器里，只看行情和公开快照。</p></div><form id="publicWatchForm" class="addbar" autocomplete="off"><input id="publicStockInput" name="stocks" inputmode="text" placeholder="输入股票代码，例如 600519, 300750, 000001"><button type="submit">加入观察</button></form><div class="public-actions"><button type="button" id="publicNotifyButton" class="secondary">打开刷新提醒</button><span id="publicLiveStatus" class="live-status"><i></i>每 30 秒看新分析</span></div></section><section id="publicLocalPanel" class="panel public-local-panel" hidden><div class="section-head"><div><h2>我的临时观察</h2><p>只在当前浏览器保存。能显示实时行情；买卖判断以公开快照为准。</p></div><button type="button" id="publicClearButton" class="secondary mini">清空</button></div><div id="publicLocalGrid" class="quickgrid"></div></section>
-    <section class="panel watchstrip" data-updated-at="2026-06-26 11:48:24">
-      <div class="section-head"><div><h2>当前监控</h2><p>横向滑动查看。公开页面不会公开本机管理入口。</p></div><div class="muted">最新分析：2026-06-26 11:48:24 · 间隔 15 分钟</div></div>
+    <section class="controlcenter readonly public-live"><div class="control-copy"><span>加股票</span><h2>输入代码，先查行情再观察。</h2><p>输入已接入的股票代码或名称，可临时查看行情；暂未接入的市场会提示原因。</p></div><form id="publicWatchForm" class="addbar" autocomplete="off"><input id="publicStockInput" name="stocks" inputmode="text" placeholder="输入股票代码，例如 600519, 300750, 000001"><button type="submit">加入观察</button></form><div class="public-actions"><button type="button" id="publicNotifyButton" class="secondary">打开刷新提醒</button><span id="publicLiveStatus" class="live-status"><i></i>每 30 秒看新分析</span></div></section><section id="publicLocalPanel" class="panel public-local-panel" hidden><div class="section-head"><div><h2>我的临时观察</h2><p>只在当前浏览器保存。查到名称和价格后才会生成观察卡。</p></div><button type="button" id="publicClearButton" class="secondary mini">清空</button></div><div id="publicLocalGrid" class="quickgrid"></div></section>
+    <section class="panel watchstrip" data-updated-at="2026-06-26 12:18:39">
+      <div class="section-head"><div><h2>当前监控</h2><p>横向滑动查看。公开页面不会公开本机管理入口。</p></div><div class="muted">最新分析：2026-06-26 12:18:39 · 间隔 15 分钟</div></div>
       <div class="chips"><span class="chip"><span>600519.SH</span></span><span class="chip"><span>000001.SZ</span></span><span class="chip"><span>300750.SZ</span></span><span class="chip"><span>000960.SZ</span></span><span class="chip"><span>688041.SH</span></span><span class="chip"><span>000510.SZ</span></span><span class="chip"><span>688981.SH</span></span><span class="chip"><span>301269.SZ</span></span></div>
     </section>
 
     <section class="scanboard hold"><div class="scan-main"><span>重点清单</span><h2>现在没有强买卖信号。</h2><p>黄色只是候选，没过关就先等。</p></div><div class="scan-lists"><div><b>可关注</b><ul><li><b>无</b><span>不进</span><span>等下一轮</span></li></ul></div><div><b>已有仓守止损</b><ul><li><b>000510.SZ</b><span>卡住 信心还不够，先放观察。</span><span>处理 先不动</span></li><li><b>000960.SZ</b><span>卡住 信心还不够，先放观察。</span><span>处理 先不动</span></li><li><b>688981.SH</b><span>卡住 信心还不够，先放观察。</span><span>处理 先不动</span></li></ul></div><div><b>候选但先别买</b><ul><li><b>000001.SZ</b><span>卡住 财务复核有硬伤，系统先挡住，不进买入候选。</span><span>处理 先不动</span></li><li><b>300750.SZ</b><span>卡住 信心还不够，先放观察。</span><span>处理 先不动</span></li><li><b>301269.SZ</b><span>卡住 财务复核有硬伤，系统先挡住，不进买入候选。</span><span>处理 先不动</span></li><li><b>600519.SH</b><span>卡住 这笔的收益空间不够明显，风险回报不划算。</span><span>处理 先不动</span></li></ul></div></div></section>
 
     <h2>股票观察卡</h2>
-    <div class="quickgrid"><article class="tradecard blocked" data-symbol="000001.SZ" data-stock-name="平安银行"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>平安银行</strong><span>000001.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>10.27</strong><em class="move down">-0.24 / -2.28%</em><small>06-26 11:30</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>10.58</b></div><div><span>止损线</span><b>10.06</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.48</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.2 11.5,5.1 18.1,5.0 24.6,5.0 31.2,5.0 37.7,5.0 44.2,5.1 50.8,5.2 57.3,5.3 63.8,5.5 70.4,5.5 76.9,5.5 83.5,5.5 90.0,5.5 96.5,5.5 103.1,49.0 109.6,5.5 116.2,5.7 122.7,5.9 129.2,5.9 135.8,6.2 142.3,6.3 148.8,6.3 155.4,6.4 161.9,6.0 168.5,6.3 175.0,6.2" /></svg><div><span>价格曲线</span><b>10.51 → 10.27</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="000001.SZ" data-current-price="10.27" data-default-planned-exit="10.58" data-default-stop-loss="10.06"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li></ul><p class="more-hint">还有 1 条，展开详情看。</p></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：2022.10亿</p><ul><li>财务复核：平安银行 000001.SZ，baostock，16小时前更新</li><li>最新季度数据 26Q1：营收同比 4.65%，扣非同比 3.17%，毛利率 --，净利率 41.17%，ROE 2.65%</li><li>估值：PE-TTM 4.70，PB 0.44，PS-TTM 1.52，当前市值 2022.10亿，10PS结论 合理/低估</li><li>财务复核发现的问题：资产负债率偏高(90.98%)</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 10.06；若跌破则假设失效</li><li>Asymmetry：目标价 10.58，估算收益风险比 1.48</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：平安银行 000001.SZ，baostock，16小时前更新</li><li>最新季度 26Q1：营收同比 4.65%，扣非同比 3.17%，毛利率 --，净利率 41.17%，ROE 2.65%</li><li>估值信息：PE-TTM 4.70，PB 0.44，PS-TTM 1.52，当前市值 2022.10亿，10PS结论 合理/低估</li><li>GP财务复核负面项：资产负债率偏高(90.98%)</li></ul></details></div></details></article><article class="tradecard no-buy" data-symbol="300750.SZ" data-stock-name="宁德时代"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>宁德时代</strong><span>300750.SZ</span></div><div class="card-actions"><span class="pill no-buy">候选，先别买</span></div></div><div class="price-focus"><span>当前价</span><strong>389.60</strong><em class="move down">-4.00 / -1.02%</em><small>06-26 11:30</small></div></div><div class="headline">想买，但目标空间不合适，先等。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>401.29</b></div><div><span>止损线</span><b>381.81</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.64</b></div></div><div class="sparkline no-buy"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.9 11.3,5.8 17.6,5.5 23.9,5.3 30.2,5.2 36.5,5.3 42.8,5.3 49.1,5.4 55.4,5.5 61.7,5.4 68.0,5.1 74.3,5.0 80.6,5.0 86.9,5.0 93.1,5.0 99.4,5.0 105.7,49.0 112.0,5.1 118.3,5.4 124.6,5.2 130.9,5.5 137.2,6.1 143.5,6.5 149.8,6.7 156.1,6.7 162.4,6.6 168.7,6.2 175.0,6.3" /></svg><div><span>价格曲线</span><b>393.60 → 389.60</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="300750.SZ" data-current-price="389.60" data-default-planned-exit="401.29" data-default-stop-loss="381.81"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：18593.87亿</p><ul><li>财务复核：宁德时代 300750.SZ，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 52.45%，扣非同比 52.95%，毛利率 24.82%，净利率 17.61%，ROE 5.97%</li><li>估值：PE-TTM 22.94，PB 5.07，PS-TTM 3.87，当前市值 18593.87亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 381.81；若跌破则假设失效</li><li>Asymmetry：目标价 401.29，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：宁德时代 300750.SZ，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 52.45%，扣非同比 52.95%，毛利率 24.82%，净利率 17.61%，ROE 5.97%</li><li>估值信息：PE-TTM 22.94，PB 5.07，PS-TTM 3.87，当前市值 18593.87亿，10PS结论 不适用</li><li>GP财务复核：未发现营收、扣非、现金流、净利率、负债率的硬性负面项</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="301269.SZ" data-stock-name="华大九天"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>华大九天</strong><span>301269.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>105.59</strong><em class="move up">+0.64 / +0.61%</em><small>06-26 11:30</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>108.76</b></div><div><span>止损线</span><b>103.48</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.48</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,7.1 11.3,7.0 17.6,7.2 23.9,6.8 30.2,6.7 36.5,6.8 42.8,5.5 49.1,5.8 55.4,5.6 61.7,5.8 68.0,5.2 74.3,5.0 80.6,5.0 86.9,5.0 93.1,5.0 99.4,5.0 105.7,49.0 112.0,5.0 118.3,5.5 124.6,5.8 130.9,6.4 137.2,6.2 143.5,6.8 149.8,6.8 156.1,7.5 162.4,7.1 168.7,6.9 175.0,6.8" /></svg><div><span>价格曲线</span><b>104.95 → 105.59</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="301269.SZ" data-current-price="105.59" data-default-planned-exit="108.76" data-default-stop-loss="103.48"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：600.53亿</p><ul><li>财务复核：华大九天 301269.SZ，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 9.65%，扣非同比 -21461.29%，毛利率 78.80%，净利率 -28.44%，ROE -1.40%</li><li>估值：PE-TTM -2609.95，PB 10.90，PS-TTM 42.09，当前市值 600.53亿，10PS结论 不适用</li><li>财务复核发现的问题：扣非同比为负(-21461.29%)；经营现金流为负；净利率为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 103.48；若跌破则假设失效</li><li>Asymmetry：目标价 108.76，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：华大九天 301269.SZ，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 9.65%，扣非同比 -21461.29%，毛利率 78.80%，净利率 -28.44%，ROE -1.40%</li><li>估值信息：PE-TTM -2609.95，PB 10.90，PS-TTM 42.09，当前市值 600.53亿，10PS结论 不适用</li><li>GP财务复核负面项：扣非同比为负(-21461.29%)；经营现金流为负；净利率为负</li></ul></details></div></details></article><article class="tradecard no-buy" data-symbol="600519.SH" data-stock-name="XD贵州茅"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>XD贵州茅</strong><span>600519.SH</span></div><div class="card-actions"><span class="pill no-buy">候选，先别买</span></div></div><div class="price-focus"><span>当前价</span><strong>1184.98</strong><em class="move down">-22.70 / -1.88%</em><small>06-26 11:30</small></div></div><div class="headline">想买，但目标空间不合适，先等。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>1220.53</b></div><div><span>止损线</span><b>1161.28</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.64</b></div></div><div class="sparkline no-buy"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.6 11.5,5.6 18.1,5.4 24.6,5.3 31.2,5.0 37.7,5.2 44.2,5.4 50.8,5.4 57.3,5.4 63.8,5.5 70.4,5.6 76.9,5.6 83.5,5.6 90.0,5.4 96.5,5.4 103.1,49.0 109.6,5.9 116.2,6.3 122.7,6.3 129.2,6.3 135.8,6.3 142.3,6.5 148.8,6.6 155.4,6.7 161.9,6.3 168.5,6.4 175.0,6.4" /></svg><div><span>价格曲线</span><b>1207.68 → 1184.98</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="600519.SH" data-current-price="1184.98" data-default-planned-exit="1220.53" data-default-stop-loss="1161.28"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：15178.77亿</p><ul><li>财务复核：贵州茅台 600519.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 6.34%，扣非同比 1.45%，毛利率 89.76%，净利率 51.47%，ROE 10.57%</li><li>估值：PE-TTM 18.36，PB 5.61，PS-TTM 8.66，当前市值 15178.77亿，10PS结论 合理/低估</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 1161.28；若跌破则假设失效</li><li>Asymmetry：目标价 1220.53，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：贵州茅台 600519.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 6.34%，扣非同比 1.45%，毛利率 89.76%，净利率 51.47%，ROE 10.57%</li><li>估值信息：PE-TTM 18.36，PB 5.61，PS-TTM 8.66，当前市值 15178.77亿，10PS结论 合理/低估</li><li>GP财务复核：未发现营收、扣非、现金流、净利率、负债率的硬性负面项</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="000510.SZ" data-stock-name="新金路"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>新金路</strong><span>000510.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>24.44</strong><em class="move down">-0.09 / -0.37%</em><small>06-26 11:30</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.60</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,8.0 11.5,7.0 18.1,6.5 24.6,6.2 31.2,7.1 37.7,6.8 44.2,6.3 50.8,6.0 57.3,5.0 63.8,5.1 70.4,5.2 76.9,5.5 83.5,5.6 90.0,5.5 96.5,5.6 103.1,49.0 109.6,5.7 116.2,7.1 122.7,6.9 129.2,7.2 135.8,7.4 142.3,7.1 148.8,7.3 155.4,8.4 161.9,8.2 168.5,8.2 175.0,8.2" /></svg><div><span>价格曲线</span><b>24.53 → 24.44</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="000510.SZ" data-current-price="24.44" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>000510.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>000510.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：168.62亿</p><ul><li>财务复核：新金路 000510.SZ，baostock，16小时前更新</li><li>最新季度数据 26Q1：营收同比 3.27%，扣非同比 -38.04%，毛利率 4.49%，净利率 -12.88%，ROE -4.81%</li><li>估值：PE-TTM -68.97，PB 16.35，PS-TTM 10.09，当前市值 168.62亿，10PS结论 不适用</li><li>财务复核发现的问题：扣非同比为负(-38.04%)；经营现金流为负；净利率为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>000510.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：新金路 000510.SZ，baostock，16小时前更新</li><li>最新季度 26Q1：营收同比 3.27%，扣非同比 -38.04%，毛利率 4.49%，净利率 -12.88%，ROE -4.81%</li><li>估值信息：PE-TTM -68.97，PB 16.35，PS-TTM 10.09，当前市值 168.62亿，10PS结论 不适用</li><li>GP财务复核负面项：扣非同比为负(-38.04%)；经营现金流为负；净利率为负</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="000960.SZ" data-stock-name="锡业股份"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>锡业股份</strong><span>000960.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>43.07</strong><em class="move down">-3.53 / -7.58%</em><small>06-26 11:30</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.60</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.0 11.5,6.3 18.1,6.1 24.6,5.9 31.2,7.1 37.7,7.0 44.2,6.8 50.8,6.8 57.3,6.9 63.8,6.6 70.4,6.6 76.9,7.1 83.5,7.2 90.0,7.0 96.5,7.1 103.1,49.0 109.6,6.9 116.2,7.3 122.7,6.0 129.2,6.1 135.8,7.2 142.3,7.5 148.8,7.7 155.4,8.5 161.9,8.3 168.5,8.3 175.0,8.3" /></svg><div><span>价格曲线</span><b>46.60 → 43.07</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="000960.SZ" data-current-price="43.07" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>000960.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>000960.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：730.90亿</p><ul><li>财务复核：锡业股份 000960.SZ，baostock，16小时前更新</li><li>最新季度数据 26Q1：营收同比 59.86%，扣非同比 72.53%，毛利率 10.04%，净利率 5.70%，ROE 3.90%</li><li>估值：PE-TTM 31.31，PB 3.53，PS-TTM 1.48，当前市值 730.90亿，10PS结论 不适用</li><li>财务复核发现的问题：经营现金流为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>000960.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：锡业股份 000960.SZ，baostock，16小时前更新</li><li>最新季度 26Q1：营收同比 59.86%，扣非同比 72.53%，毛利率 10.04%，净利率 5.70%，ROE 3.90%</li><li>估值信息：PE-TTM 31.31，PB 3.53，PS-TTM 1.48，当前市值 730.90亿，10PS结论 不适用</li><li>GP财务复核负面项：经营现金流为负</li></ul></details></div></details></article><article class="tradecard expensive" data-symbol="688981.SH" data-stock-name="中芯国际"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>中芯国际</strong><span>688981.SH</span></div><div class="card-actions"><span class="pill expensive">估值偏贵</span></div></div><div class="price-focus"><span>当前价</span><strong>147.92</strong><em class="move down">-6.68 / -4.32%</em><small>06-26 11:30</small></div></div><div class="headline">估值偏贵，先等更舒服的位置。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.60</b></div></div><div class="sparkline expensive"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,6.0 11.3,5.9 17.6,5.8 23.9,5.9 30.2,5.1 36.5,5.0 42.8,5.0 49.1,5.5 55.4,5.3 61.7,5.2 68.0,5.8 74.3,5.6 80.6,5.4 86.9,5.4 93.1,5.4 99.4,5.4 105.7,49.0 112.0,6.2 118.3,5.9 124.6,5.7 130.9,6.7 137.2,6.8 143.5,7.2 149.8,7.3 156.1,8.0 162.4,8.0 168.7,7.8 175.0,7.8" /></svg><div><span>价格曲线</span><b>154.60 → 147.92</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="688981.SH" data-current-price="147.92" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>688981.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>688981.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：12569.46亿</p><ul><li>财务复核：中芯国际 688981.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 8.07%，扣非同比 5.32%，毛利率 21.48%，净利率 9.05%，ROE 0.91%</li><li>估值：PE-TTM 223.46，PB 7.53，PS-TTM 16.43，当前市值 12569.46亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>688981.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：中芯国际 688981.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 8.07%，扣非同比 5.32%，毛利率 21.48%，净利率 9.05%，ROE 0.91%</li><li>估值信息：PE-TTM 223.46，PB 7.53，PS-TTM 16.43，当前市值 12569.46亿，10PS结论 不适用</li></ul></details></div></details></article><article class="tradecard expensive" data-symbol="688041.SH" data-stock-name="海光信息"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>海光信息</strong><span>688041.SH</span></div><div class="card-actions"><span class="pill expensive">估值偏贵</span></div></div><div class="price-focus"><span>当前价</span><strong>342.73</strong><em class="move down">-5.57 / -1.60%</em><small>06-26 11:30</small></div></div><div class="headline">估值偏贵，先等更舒服的位置。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk ok">通过</b></div><div><span>信心</span><b>0.50</b></div></div><div class="sparkline expensive"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,7.2 11.3,7.2 17.6,7.2 23.9,7.5 30.2,5.7 36.5,5.0 42.8,5.2 49.1,5.5 55.4,5.7 61.7,5.5 68.0,6.1 74.3,6.1 80.6,5.8 86.9,5.8 93.1,5.8 99.4,5.8 105.7,49.0 112.0,6.4 118.3,6.7 124.6,6.5 130.9,7.1 137.2,7.3 143.5,7.7 149.8,7.9 156.1,8.4 162.4,8.2 168.7,7.9 175.0,7.9" /></svg><div><span>价格曲线</span><b>348.30 → 342.73</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="688041.SH" data-current-price="342.73" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>先放观察名单。先看安全边际，再看有没有足够收益空间。</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>先放观察名单。先看安全边际，再看有没有足够收益空间。</li><li>当前使用备用规则分析，本地深度模型暂未接入。</li><li>趋势和动量信号不够一致</li><li>先放观察名单。先看安全边际，再看有没有足够收益空间。</li><li>优势证据：趋势/动量信号来自价格结构，当前信心 0.50</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：8374.13亿</p><ul><li>财务复核：海光信息 688041.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 68.06%，扣非同比 34.99%，毛利率 55.60%，净利率 21.75%，ROE 2.99%</li><li>估值：PE-TTM 279.66，PB 32.45，PS-TTM 47.62，当前市值 8374.13亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>当前风控：通过。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>趋势和动量信号不够一致</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.50</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：海光信息 688041.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 68.06%，扣非同比 34.99%，毛利率 55.60%，净利率 21.75%，ROE 2.99%</li><li>估值信息：PE-TTM 279.66，PB 32.45，PS-TTM 47.62，当前市值 8374.13亿，10PS结论 不适用</li></ul></details></div></details></article></div>
+    <div class="quickgrid"><article class="tradecard blocked" data-symbol="000001.SZ" data-stock-name="平安银行"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>平安银行</strong><span>000001.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>10.27</strong><em class="move down">-0.24 / -2.28%</em><small>06-26 11:30</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>10.58</b></div><div><span>止损线</span><b>10.06</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.48</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.2 11.5,5.1 18.1,5.0 24.6,5.0 31.2,5.0 37.7,5.0 44.2,5.1 50.8,5.2 57.3,5.3 63.8,5.5 70.4,5.5 76.9,5.5 83.5,5.5 90.0,5.5 96.5,5.5 103.1,49.0 109.6,5.5 116.2,5.7 122.7,5.9 129.2,5.9 135.8,6.2 142.3,6.3 148.8,6.3 155.4,6.4 161.9,6.0 168.5,6.3 175.0,6.2" /></svg><div><span>价格曲线</span><b>10.51 → 10.27</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="000001.SZ" data-current-price="10.27" data-default-planned-exit="10.58" data-default-stop-loss="10.06"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li></ul><p class="more-hint">还有 1 条，展开详情看。</p></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：2022.10亿</p><ul><li>财务复核：平安银行 000001.SZ，baostock，16小时前更新</li><li>最新季度数据 26Q1：营收同比 4.65%，扣非同比 3.17%，毛利率 --，净利率 41.17%，ROE 2.65%</li><li>估值：PE-TTM 4.70，PB 0.44，PS-TTM 1.52，当前市值 2022.10亿，10PS结论 合理/低估</li><li>财务复核发现的问题：资产负债率偏高(90.98%)</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 10.06；若跌破则假设失效</li><li>Asymmetry：目标价 10.58，估算收益风险比 1.48</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 -1</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：平安银行 000001.SZ，baostock，16小时前更新</li><li>最新季度 26Q1：营收同比 4.65%，扣非同比 3.17%，毛利率 --，净利率 41.17%，ROE 2.65%</li><li>估值信息：PE-TTM 4.70，PB 0.44，PS-TTM 1.52，当前市值 2022.10亿，10PS结论 合理/低估</li><li>GP财务复核负面项：资产负债率偏高(90.98%)</li></ul></details></div></details></article><article class="tradecard no-buy" data-symbol="300750.SZ" data-stock-name="宁德时代"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>宁德时代</strong><span>300750.SZ</span></div><div class="card-actions"><span class="pill no-buy">候选，先别买</span></div></div><div class="price-focus"><span>当前价</span><strong>389.60</strong><em class="move down">-4.00 / -1.02%</em><small>06-26 11:30</small></div></div><div class="headline">想买，但目标空间不合适，先等。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>401.29</b></div><div><span>止损线</span><b>381.81</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.64</b></div></div><div class="sparkline no-buy"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.9 11.3,5.8 17.6,5.5 23.9,5.3 30.2,5.2 36.5,5.3 42.8,5.3 49.1,5.4 55.4,5.5 61.7,5.4 68.0,5.1 74.3,5.0 80.6,5.0 86.9,5.0 93.1,5.0 99.4,5.0 105.7,49.0 112.0,5.1 118.3,5.4 124.6,5.2 130.9,5.5 137.2,6.1 143.5,6.5 149.8,6.7 156.1,6.7 162.4,6.6 168.7,6.2 175.0,6.3" /></svg><div><span>价格曲线</span><b>393.60 → 389.60</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="300750.SZ" data-current-price="389.60" data-default-planned-exit="401.29" data-default-stop-loss="381.81"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：18593.87亿</p><ul><li>财务复核：宁德时代 300750.SZ，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 52.45%，扣非同比 52.95%，毛利率 24.82%，净利率 17.61%，ROE 5.97%</li><li>估值：PE-TTM 22.94，PB 5.07，PS-TTM 3.87，当前市值 18593.87亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 381.81；若跌破则假设失效</li><li>Asymmetry：目标价 401.29，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 -1</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：宁德时代 300750.SZ，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 52.45%，扣非同比 52.95%，毛利率 24.82%，净利率 17.61%，ROE 5.97%</li><li>估值信息：PE-TTM 22.94，PB 5.07，PS-TTM 3.87，当前市值 18593.87亿，10PS结论 不适用</li><li>GP财务复核：未发现营收、扣非、现金流、净利率、负债率的硬性负面项</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="301269.SZ" data-stock-name="华大九天"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>华大九天</strong><span>301269.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>105.59</strong><em class="move up">+0.64 / +0.61%</em><small>06-26 11:30</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>108.76</b></div><div><span>止损线</span><b>103.48</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.48</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,7.1 11.3,7.0 17.6,7.2 23.9,6.8 30.2,6.7 36.5,6.8 42.8,5.5 49.1,5.8 55.4,5.6 61.7,5.8 68.0,5.2 74.3,5.0 80.6,5.0 86.9,5.0 93.1,5.0 99.4,5.0 105.7,49.0 112.0,5.0 118.3,5.5 124.6,5.8 130.9,6.4 137.2,6.2 143.5,6.8 149.8,6.8 156.1,7.5 162.4,7.1 168.7,6.9 175.0,6.8" /></svg><div><span>价格曲线</span><b>104.95 → 105.59</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="301269.SZ" data-current-price="105.59" data-default-planned-exit="108.76" data-default-stop-loss="103.48"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：600.53亿</p><ul><li>财务复核：华大九天 301269.SZ，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 9.65%，扣非同比 -21461.29%，毛利率 78.80%，净利率 -28.44%，ROE -1.40%</li><li>估值：PE-TTM -2609.95，PB 10.90，PS-TTM 42.09，当前市值 600.53亿，10PS结论 不适用</li><li>财务复核发现的问题：扣非同比为负(-21461.29%)；经营现金流为负；净利率为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 103.48；若跌破则假设失效</li><li>Asymmetry：目标价 108.76，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 -1</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：华大九天 301269.SZ，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 9.65%，扣非同比 -21461.29%，毛利率 78.80%，净利率 -28.44%，ROE -1.40%</li><li>估值信息：PE-TTM -2609.95，PB 10.90，PS-TTM 42.09，当前市值 600.53亿，10PS结论 不适用</li><li>GP财务复核负面项：扣非同比为负(-21461.29%)；经营现金流为负；净利率为负</li></ul></details></div></details></article><article class="tradecard no-buy" data-symbol="600519.SH" data-stock-name="XD贵州茅"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>XD贵州茅</strong><span>600519.SH</span></div><div class="card-actions"><span class="pill no-buy">候选，先别买</span></div></div><div class="price-focus"><span>当前价</span><strong>1184.98</strong><em class="move down">-22.70 / -1.88%</em><small>06-26 11:30</small></div></div><div class="headline">想买，但目标空间不合适，先等。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>1220.53</b></div><div><span>止损线</span><b>1161.28</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.64</b></div></div><div class="sparkline no-buy"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.6 11.5,5.6 18.1,5.4 24.6,5.3 31.2,5.0 37.7,5.2 44.2,5.4 50.8,5.4 57.3,5.4 63.8,5.5 70.4,5.6 76.9,5.6 83.5,5.6 90.0,5.4 96.5,5.4 103.1,49.0 109.6,5.9 116.2,6.3 122.7,6.3 129.2,6.3 135.8,6.3 142.3,6.5 148.8,6.6 155.4,6.7 161.9,6.3 168.5,6.4 175.0,6.4" /></svg><div><span>价格曲线</span><b>1207.68 → 1184.98</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="600519.SH" data-current-price="1184.98" data-default-planned-exit="1220.53" data-default-stop-loss="1161.28"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：15178.77亿</p><ul><li>财务复核：贵州茅台 600519.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 6.34%，扣非同比 1.45%，毛利率 89.76%，净利率 51.47%，ROE 10.57%</li><li>估值：PE-TTM 18.36，PB 5.61，PS-TTM 8.66，当前市值 15178.77亿，10PS结论 合理/低估</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 1161.28；若跌破则假设失效</li><li>Asymmetry：目标价 1220.53，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 -1</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：贵州茅台 600519.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 6.34%，扣非同比 1.45%，毛利率 89.76%，净利率 51.47%，ROE 10.57%</li><li>估值信息：PE-TTM 18.36，PB 5.61，PS-TTM 8.66，当前市值 15178.77亿，10PS结论 合理/低估</li><li>GP财务复核：未发现营收、扣非、现金流、净利率、负债率的硬性负面项</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="000510.SZ" data-stock-name="新金路"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>新金路</strong><span>000510.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>24.44</strong><em class="move down">-0.09 / -0.37%</em><small>06-26 11:30</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.60</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,8.0 11.5,7.0 18.1,6.5 24.6,6.2 31.2,7.1 37.7,6.8 44.2,6.3 50.8,6.0 57.3,5.0 63.8,5.1 70.4,5.2 76.9,5.5 83.5,5.6 90.0,5.5 96.5,5.6 103.1,49.0 109.6,5.7 116.2,7.1 122.7,6.9 129.2,7.2 135.8,7.4 142.3,7.1 148.8,7.3 155.4,8.4 161.9,8.2 168.5,8.2 175.0,8.2" /></svg><div><span>价格曲线</span><b>24.53 → 24.44</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="000510.SZ" data-current-price="24.44" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>000510.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>000510.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：168.62亿</p><ul><li>财务复核：新金路 000510.SZ，baostock，16小时前更新</li><li>最新季度数据 26Q1：营收同比 3.27%，扣非同比 -38.04%，毛利率 4.49%，净利率 -12.88%，ROE -4.81%</li><li>估值：PE-TTM -68.97，PB 16.35，PS-TTM 10.09，当前市值 168.62亿，10PS结论 不适用</li><li>财务复核发现的问题：扣非同比为负(-38.04%)；经营现金流为负；净利率为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>000510.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 -1</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：新金路 000510.SZ，baostock，16小时前更新</li><li>最新季度 26Q1：营收同比 3.27%，扣非同比 -38.04%，毛利率 4.49%，净利率 -12.88%，ROE -4.81%</li><li>估值信息：PE-TTM -68.97，PB 16.35，PS-TTM 10.09，当前市值 168.62亿，10PS结论 不适用</li><li>GP财务复核负面项：扣非同比为负(-38.04%)；经营现金流为负；净利率为负</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="000960.SZ" data-stock-name="锡业股份"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>锡业股份</strong><span>000960.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>43.07</strong><em class="move down">-3.53 / -7.58%</em><small>06-26 11:30</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.60</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.0 11.5,6.3 18.1,6.1 24.6,5.9 31.2,7.1 37.7,7.0 44.2,6.8 50.8,6.8 57.3,6.9 63.8,6.6 70.4,6.6 76.9,7.1 83.5,7.2 90.0,7.0 96.5,7.1 103.1,49.0 109.6,6.9 116.2,7.3 122.7,6.0 129.2,6.1 135.8,7.2 142.3,7.5 148.8,7.7 155.4,8.5 161.9,8.3 168.5,8.3 175.0,8.3" /></svg><div><span>价格曲线</span><b>46.60 → 43.07</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="000960.SZ" data-current-price="43.07" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>000960.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>000960.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：730.90亿</p><ul><li>财务复核：锡业股份 000960.SZ，baostock，16小时前更新</li><li>最新季度数据 26Q1：营收同比 59.86%，扣非同比 72.53%，毛利率 10.04%，净利率 5.70%，ROE 3.90%</li><li>估值：PE-TTM 31.31，PB 3.53，PS-TTM 1.48，当前市值 730.90亿，10PS结论 不适用</li><li>财务复核发现的问题：经营现金流为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>000960.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 -1</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：锡业股份 000960.SZ，baostock，16小时前更新</li><li>最新季度 26Q1：营收同比 59.86%，扣非同比 72.53%，毛利率 10.04%，净利率 5.70%，ROE 3.90%</li><li>估值信息：PE-TTM 31.31，PB 3.53，PS-TTM 1.48，当前市值 730.90亿，10PS结论 不适用</li><li>GP财务复核负面项：经营现金流为负</li></ul></details></div></details></article><article class="tradecard expensive" data-symbol="688981.SH" data-stock-name="中芯国际"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>中芯国际</strong><span>688981.SH</span></div><div class="card-actions"><span class="pill expensive">估值偏贵</span></div></div><div class="price-focus"><span>当前价</span><strong>147.92</strong><em class="move down">-6.68 / -4.32%</em><small>06-26 11:30</small></div></div><div class="headline">估值偏贵，先等更舒服的位置。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.60</b></div></div><div class="sparkline expensive"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,6.0 11.3,5.9 17.6,5.8 23.9,5.9 30.2,5.1 36.5,5.0 42.8,5.0 49.1,5.5 55.4,5.3 61.7,5.2 68.0,5.8 74.3,5.6 80.6,5.4 86.9,5.4 93.1,5.4 99.4,5.4 105.7,49.0 112.0,6.2 118.3,5.9 124.6,5.7 130.9,6.7 137.2,6.8 143.5,7.2 149.8,7.3 156.1,8.0 162.4,8.0 168.7,7.8 175.0,7.8" /></svg><div><span>价格曲线</span><b>154.60 → 147.92</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="688981.SH" data-current-price="147.92" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>688981.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>688981.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：12569.46亿</p><ul><li>财务复核：中芯国际 688981.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 8.07%，扣非同比 5.32%，毛利率 21.48%，净利率 9.05%，ROE 0.91%</li><li>估值：PE-TTM 223.46，PB 7.53，PS-TTM 16.43，当前市值 12569.46亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>688981.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 -1</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：中芯国际 688981.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 8.07%，扣非同比 5.32%，毛利率 21.48%，净利率 9.05%，ROE 0.91%</li><li>估值信息：PE-TTM 223.46，PB 7.53，PS-TTM 16.43，当前市值 12569.46亿，10PS结论 不适用</li></ul></details></div></details></article><article class="tradecard expensive" data-symbol="688041.SH" data-stock-name="海光信息"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>海光信息</strong><span>688041.SH</span></div><div class="card-actions"><span class="pill expensive">估值偏贵</span></div></div><div class="price-focus"><span>当前价</span><strong>342.73</strong><em class="move down">-5.57 / -1.60%</em><small>06-26 11:30</small></div></div><div class="headline">估值偏贵，先等更舒服的位置。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk ok">通过</b></div><div><span>信心</span><b>0.50</b></div></div><div class="sparkline expensive"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,7.2 11.3,7.2 17.6,7.2 23.9,7.5 30.2,5.7 36.5,5.0 42.8,5.2 49.1,5.5 55.4,5.7 61.7,5.5 68.0,6.1 74.3,6.1 80.6,5.8 86.9,5.8 93.1,5.8 99.4,5.8 105.7,49.0 112.0,6.4 118.3,6.7 124.6,6.5 130.9,7.1 137.2,7.3 143.5,7.7 149.8,7.9 156.1,8.4 162.4,8.2 168.7,7.9 175.0,7.9" /></svg><div><span>价格曲线</span><b>348.30 → 342.73</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="688041.SH" data-current-price="342.73" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>先放观察名单。先看安全边际，再看有没有足够收益空间。</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>先放观察名单。先看安全边际，再看有没有足够收益空间。</li><li>当前使用备用规则分析，本地深度模型暂未接入。</li><li>趋势和动量信号不够一致</li><li>先放观察名单。先看安全边际，再看有没有足够收益空间。</li><li>优势证据：趋势/动量信号来自价格结构，当前信心 0.50</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：8374.13亿</p><ul><li>财务复核：海光信息 688041.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 68.06%，扣非同比 34.99%，毛利率 55.60%，净利率 21.75%，ROE 2.99%</li><li>估值：PE-TTM 279.66，PB 32.45，PS-TTM 47.62，当前市值 8374.13亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>当前风控：通过。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>趋势和动量信号不够一致</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.50</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 -1</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：海光信息 688041.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 68.06%，扣非同比 34.99%，毛利率 55.60%，净利率 21.75%，ROE 2.99%</li><li>估值信息：PE-TTM 279.66，PB 32.45，PS-TTM 47.62，当前市值 8374.13亿，10PS结论 不适用</li></ul></details></div></details></article></div>
 
     <div class="grid2">
       <section class="panel">
         <h2>局势</h2>
         <div class="muted">风险标记：利好, 加息, 反弹, 通胀</div>
-        <details><summary>详细新闻</summary><ul class="news"><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3df6878c2e4f25841b3f562b8bf771&amp;url=https%3a%2f%2ffinance.sina.com.cn%2fmoney%2ffund%2fjjgsgd%2f2026-06-25%2fdoc-inierpqu2460528.shtml&amp;c=9705480760425005437&amp;mkt=en-us" target="_blank" rel="noreferrer">宏利观市｜地缘缓和、美联储鹰派，如何影响全球大类资产？</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 25 Jun 2026 03:52:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3df6878c2e4f25841b3f562b8bf771&amp;url=https%3a%2f%2fnews.fx678.com%2f202601132030582284.shtml&amp;c=5288883211875443403&amp;mkt=en-us" target="_blank" rel="noreferrer">全球市场聚焦：黄金历史新高后回落，原油突发地缘溢价，今晚数据将如何引爆行情？</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Tue, 13 Jan 2026 12:31:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3df6878c2e4f25841b3f562b8bf771&amp;url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20260615A083I200&amp;c=7727999294261873057&amp;mkt=en-us" target="_blank" rel="noreferrer">重磅利好落地！美伊初步协议敲定，全球市场迎来全面反弹行情</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Mon, 15 Jun 2026 03:50:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3df6878c2e4f25841b3f562b8bf771&amp;url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20260625A00ZCN00&amp;c=1479954303793569554&amp;mkt=en-us" target="_blank" rel="noreferrer">WTI原油失守70美元：地缘溢价彻底清零，通胀与加息预期形成“双杀”</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Wed, 24 Jun 2026 13:10:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3df6878c2e4f25841b3f562b8bf771&amp;url=https%3a%2f%2ffinance.sina.com.cn%2fmoney%2ffund%2fjjgsgd%2f2026-06-11%2fdoc-inicaraf0474483.shtml&amp;c=10399406349384990653&amp;mkt=en-us" target="_blank" rel="noreferrer">宏利观市｜非农数据扰动美联储政策预期，全球股市大幅波动</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 11 Jun 2026 04:38:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3df6878c2e4f25841b3f562b8bf771&amp;url=https%3a%2f%2fwww.chinanews.com%2fcj%2f2026%2f05-21%2f10625608.shtml&amp;c=11955204090442838390&amp;mkt=en-us" target="_blank" rel="noreferrer">全球利率震荡 LPR以静制动</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 21 May 2026 03:10:00 GMT</span></li></ul></details>
+        <details><summary>详细新闻</summary><ul class="news"><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dfd9e6d4a4447b08f2c3ffc2ad899&amp;url=https%3a%2f%2ffinance.sina.com.cn%2fmoney%2ffund%2fjjgsgd%2f2026-06-25%2fdoc-inierpqu2460528.shtml&amp;c=9705480760425005437&amp;mkt=en-us" target="_blank" rel="noreferrer">宏利观市｜地缘缓和、美联储鹰派，如何影响全球大类资产？</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 25 Jun 2026 03:52:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dfd9e6d4a4447b08f2c3ffc2ad899&amp;url=https%3a%2f%2fnews.fx678.com%2f202601132030582284.shtml&amp;c=5288883211875443403&amp;mkt=en-us" target="_blank" rel="noreferrer">全球市场聚焦：黄金历史新高后回落，原油突发地缘溢价，今晚数据将如何引爆行情？</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Tue, 13 Jan 2026 12:31:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dfd9e6d4a4447b08f2c3ffc2ad899&amp;url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20260615A083I200&amp;c=7727999294261873057&amp;mkt=en-us" target="_blank" rel="noreferrer">重磅利好落地！美伊初步协议敲定，全球市场迎来全面反弹行情</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Mon, 15 Jun 2026 03:50:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dfd9e6d4a4447b08f2c3ffc2ad899&amp;url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20260625A00ZCN00&amp;c=1479954303793569554&amp;mkt=en-us" target="_blank" rel="noreferrer">WTI原油失守70美元：地缘溢价彻底清零，通胀与加息预期形成“双杀”</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Wed, 24 Jun 2026 13:10:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dfd9e6d4a4447b08f2c3ffc2ad899&amp;url=https%3a%2f%2ffinance.sina.com.cn%2fmoney%2ffund%2fjjgsgd%2f2026-06-11%2fdoc-inicaraf0474483.shtml&amp;c=10399406349384990653&amp;mkt=en-us" target="_blank" rel="noreferrer">宏利观市｜非农数据扰动美联储政策预期，全球股市大幅波动</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 11 Jun 2026 04:38:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dfd9e6d4a4447b08f2c3ffc2ad899&amp;url=https%3a%2f%2fwww.chinanews.com%2fcj%2f2026%2f05-21%2f10625608.shtml&amp;c=11955204090442838390&amp;mkt=en-us" target="_blank" rel="noreferrer">全球利率震荡 LPR以静制动</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 21 May 2026 03:10:00 GMT</span></li></ul></details>
       </section>
       <section class="panel">
         <h2>一句话</h2>
@@ -874,9 +886,9 @@
 
     <h2>开发/复盘记录</h2>
     <details><summary>展开复盘记录</summary><pre>股票观察复盘
-更新时间: 2026-06-26 11:48:24 CST
+更新时间: 2026-06-26 12:18:39 CST
 流程: 交易大师框架 -&gt; 当前局势 -&gt; GP财务复核 -&gt; 风控验证。
-当前局势: neutral，风险分数 0
+当前局势: neutral，风险分数 -1
 安全边界: 只读辅助观察，不是投资建议，不会执行真实交易。
 
 局势摘要:
@@ -900,9 +912,11 @@
     (() => {
       const watchKey = "tradeosPublicWatchlistV1";
       const historyKey = "tradeosPublicQuoteHistoryV1";
+      const quoteCacheKey = "tradeosPublicQuoteSnapshotV1";
       const positionKey = "ma88Positions:v1";
       const form = document.getElementById("publicWatchForm");
       const input = document.getElementById("publicStockInput");
+      const publicWatchButton = form?.querySelector("button[type='submit']");
       const localPanel = document.getElementById("publicLocalPanel");
       const localGrid = document.getElementById("publicLocalGrid");
       const clearButton = document.getElementById("publicClearButton");
@@ -923,6 +937,7 @@
       const firstUpdated = document.querySelector("[data-updated-at]")?.dataset.updatedAt || "";
       let lastUpdated = firstUpdated;
       let selectedPositionSymbol = "";
+      let publicWatchMessage = null;
 
       const htmlMap = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
       const escHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => htmlMap[ch]);
@@ -944,6 +959,11 @@
       };
       const loadWatchlist = () => Array.isArray(loadJson(watchKey, [])) ? loadJson(watchKey, []) : [];
       const saveWatchlist = (symbols) => saveJson(watchKey, [...new Set(symbols)].slice(0, 24));
+      const loadQuoteCache = () => {
+        const value = loadJson(quoteCacheKey, {});
+        return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+      };
+      const saveQuoteCache = (cache) => saveJson(quoteCacheKey, cache);
       const loadPositions = () => {
         const value = loadJson(positionKey, {});
         return value && typeof value === "object" && !Array.isArray(value) ? value : {};
@@ -1427,6 +1447,161 @@
         return card?.dataset.stockName || "";
       }
 
+      function validPublicQuote(symbol, quote) {
+        const price = toNumber(quote?.price);
+        const name = String(quote?.name || "").trim();
+        if (!symbol || !name || price === null || price <= 0) return null;
+        return {
+          ok: true,
+          symbol,
+          name,
+          price,
+          time: quote.time || "--",
+          source: quote.source || "公开行情",
+        };
+      }
+
+      function snapshotQuote(symbol) {
+        const item = stockBySymbol(symbol);
+        const quote = validPublicQuote(symbol, {
+          name: item?.name,
+          price: item?.current,
+          time: firstUpdated || "公开快照",
+          source: "公开快照",
+        });
+        return quote;
+      }
+
+      function cachedQuote(symbol) {
+        const quote = loadQuoteCache()[symbol];
+        return validPublicQuote(symbol, quote);
+      }
+
+      function rememberQuote(quote) {
+        if (!quote?.symbol) return;
+        const cache = loadQuoteCache();
+        cache[quote.symbol] = {
+          name: quote.name,
+          price: quote.price,
+          time: quote.time,
+          source: quote.source,
+          updatedAt: new Date().toISOString(),
+        };
+        saveQuoteCache(cache);
+      }
+
+      function quoteForLocalCard(symbol) {
+        const quote = cachedQuote(symbol) || snapshotQuote(symbol);
+        if (quote) rememberQuote(quote);
+        return quote;
+      }
+
+      function parseTencentQuote(symbol, code) {
+        const raw = window[`v_${code}`];
+        if (!raw) return null;
+        const fields = String(raw).split("~");
+        return validPublicQuote(symbol, {
+          name: fields[1],
+          price: fields[3],
+          time: formatTencentTime(fields[30]),
+          source: "公开行情",
+        });
+      }
+
+      function fetchTencentQuotes(pairs) {
+        return new Promise((resolve) => {
+          if (!pairs.length) {
+            resolve({});
+            return;
+          }
+          const script = document.createElement("script");
+          let done = false;
+          const finish = (quotes) => {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            script.remove();
+            resolve(quotes);
+          };
+          const timer = setTimeout(() => finish({}), 6500);
+          script.charset = "gbk";
+          script.src = `https://qt.gtimg.cn/q=${pairs.map((pair) => pair[1]).join(",")}&_=${Date.now()}`;
+          script.onload = () => {
+            const quotes = {};
+            pairs.forEach(([symbol, code]) => {
+              const quote = parseTencentQuote(symbol, code);
+              if (quote) quotes[symbol] = quote;
+            });
+            finish(quotes);
+          };
+          script.onerror = () => finish({});
+          document.body.appendChild(script);
+        });
+      }
+
+      function resolvePublicWatchInput(raw) {
+        const query = String(raw || "").trim();
+        if (!query) return { ok: false, raw: query, reason: "先输入股票代码或名称，例如 000001 / 600519 / 平安银行。" };
+        const upper = query.toUpperCase();
+        const digits = query.replace(/\D/g, "");
+        if (/^\d{5}(\.HK)?$/i.test(upper)) {
+          return { ok: false, raw: query, reason: "暂未接入港股行情，当前无法显示实时价。" };
+        }
+        if (digits === "000001") return { ok: true, symbol: "000001.SZ", raw: query };
+        if (digits === "600519") return { ok: true, symbol: "600519.SH", raw: query };
+        const normalized = normalizeOne(query);
+        const lower = query.toLowerCase();
+        const matches = stockCatalog().filter((item) => {
+          const bare = item.symbol.replace(/\.(SH|SZ|BJ)$/, "");
+          const name = item.name.toLowerCase();
+          return (
+            item.symbol === normalized ||
+            (digits && bare === digits) ||
+            (lower && name.includes(lower)) ||
+            (lower && item.symbol.toLowerCase().includes(lower))
+          );
+        });
+        const exact = matches.filter((item) => {
+          const bare = item.symbol.replace(/\.(SH|SZ|BJ)$/, "");
+          return item.symbol === normalized || (digits && bare === digits) || item.name === query;
+        });
+        if (exact.length === 1) return { ok: true, symbol: exact[0].symbol, raw: query };
+        if (matches.length === 1) return { ok: true, symbol: matches[0].symbol, raw: query };
+        if (matches.length > 1) return { ok: false, raw: query, reason: "匹配到多只股票，请输入更完整的代码或名称。" };
+        if (/^\d{6}\.(SH|SZ|BJ)$/.test(normalized)) return { ok: true, symbol: normalized, raw: query };
+        return { ok: false, raw: query, reason: "该代码暂未接入行情源，请检查代码或市场。" };
+      }
+
+      async function lookupPublicQuote(symbol) {
+        const snapshot = snapshotQuote(symbol);
+        if (snapshot) return snapshot;
+        const code = quoteCode(symbol);
+        if (!code) {
+          return { ok: false, symbol, reason: "该代码暂未接入行情源，请检查代码或市场。" };
+        }
+        const quotes = await fetchTencentQuotes([[symbol, code]]);
+        const quote = quotes[symbol];
+        if (quote) return quote;
+        return { ok: false, symbol, reason: "该代码暂未接入行情源，请检查代码或市场。" };
+      }
+
+      function failureCardHtml(raw, reason, symbol = "") {
+        return `
+          <div class="public-watch-message" data-watch-error="${escHtml(raw)}">
+            <strong>${escHtml(raw || "未识别代码")}</strong>
+            <p>${escHtml(reason || "该代码暂未接入行情源，请检查代码或市场。")}</p>
+            <small>建议输入：000001 / 600519 / 平安银行</small>
+            ${symbol ? `<button type="button" class="mini danger" data-remove-local="${escHtml(symbol)}">移除</button>` : ""}
+          </div>
+        `;
+      }
+
+      function renderPublicWatchFailure(raw, reason) {
+        publicWatchMessage = { raw, reason };
+        renderLocalCards();
+        setLiveStatus(reason || "该代码暂未接入行情源，请检查代码或市场。");
+      }
+
       function sparkline(values) {
         const nums = values.map(Number).filter(Number.isFinite).slice(-18);
         if (nums.length < 2) return '<div class="spark-empty">等两次刷新出曲线</div>';
@@ -1448,82 +1623,74 @@
       function renderLocalCards() {
         const symbols = loadWatchlist();
         if (!localPanel || !localGrid) return;
-        localPanel.hidden = symbols.length === 0;
+        localPanel.hidden = symbols.length === 0 && !publicWatchMessage;
         const history = loadJson(historyKey, {});
-        localGrid.innerHTML = symbols.map((symbol) => {
+        const messageHtml = publicWatchMessage ? failureCardHtml(publicWatchMessage.raw, publicWatchMessage.reason) : "";
+        const cardsHtml = symbols.map((symbol) => {
           const inSnapshot = !!findPublicCard(symbol);
-          const name = knownName(symbol);
+          const quote = quoteForLocalCard(symbol);
+          if (!quote) {
+            return failureCardHtml(symbol, "该代码暂未接入行情源，请检查代码或市场。", symbol);
+          }
           return `
-            <article class="tradecard public-local-card hold" data-local-symbol="${escHtml(symbol)}">
+            <article class="tradecard public-local-card hold" data-local-symbol="${escHtml(symbol)}" data-local-source="${escHtml(quote.source)}">
               <div class="cardtop">
-                <div class="stockid"><strong>${escHtml(name || "等待行情")}</strong><span>${escHtml(symbol)}</span></div>
+                <div class="stockid"><strong>${escHtml(quote.name)}</strong><span>${escHtml(symbol)}</span></div>
                 <div class="card-actions"><span class="pill hold">暂时别动</span><button type="button" class="mini danger" data-remove-local="${escHtml(symbol)}">移除</button></div>
               </div>
-              <div class="headline">${inSnapshot ? "下面公开卡片有完整判断。" : "先看实时价，买卖等公开分析。"}</div>
-              <div class="quotegrid"><div><span>最新价</span><b data-local-price>--</b></div><div><span>名称</span><b data-local-name>${escHtml(name || "--")}</b></div><div><span>更新时间</span><b data-local-time>--</b></div></div>
+              <div class="headline">${inSnapshot ? "下面公开卡片有完整判断。" : "临时行情已查到，先观察。"}</div>
+              <div class="quotegrid"><div><span>最新价</span><b data-local-price>${Number(quote.price).toFixed(2)}</b></div><div><span>名称</span><b data-local-name>${escHtml(quote.name)}</b></div><div><span>更新时间</span><b data-local-time>${escHtml(quote.time || "--")}</b></div></div>
               <div data-local-spark>${sparkline(history[symbol] || [])}</div>
-              ${positionShell(symbol)}
+              ${positionShell(symbol, Number(quote.price).toFixed(2))}
               <div class="points"><div><span>进</span><b>等分析，不追</b></div><div><span>出</span><b>没有进场，就没有出场</b></div></div>
-              <div class="tiny">公开输入不会改主监控列表，不会下单。真正判断以下一次公开分析为准。</div>
+              <div class="tiny">行情来源：${escHtml(quote.source)}。公开输入不会改主监控列表，不会下单。</div>
             </article>
           `;
         }).join("");
+        localGrid.innerHTML = messageHtml + cardsHtml;
         renderAllPositions();
       }
 
       function updateLocalQuote(symbol, quote) {
         const card = Array.from(document.querySelectorAll("[data-local-symbol]")).find((item) => item.dataset.localSymbol === symbol);
-        if (!card || !quote) return;
-        const name = quote.name || knownName(symbol) || "--";
+        const nextQuote = validPublicQuote(symbol, quote);
+        if (!nextQuote) return;
+        rememberQuote(nextQuote);
+        if (!card) return;
+        const name = nextQuote.name;
         card.querySelector("[data-local-name]").textContent = name;
-        card.querySelector(".stockid strong").textContent = name === "--" ? "等待行情" : name;
-        card.querySelector("[data-local-price]").textContent = quote.price ? Number(quote.price).toFixed(2) : "--";
-        card.querySelector("[data-local-time]").textContent = quote.time || "--";
+        card.querySelector(".stockid strong").textContent = name;
+        card.querySelector("[data-local-price]").textContent = Number(nextQuote.price).toFixed(2);
+        card.querySelector("[data-local-time]").textContent = nextQuote.time || "--";
         const positionSection = card.querySelector("[data-position-symbol]");
-        if (positionSection && quote.price) {
-          positionSection.dataset.currentPrice = Number(quote.price).toFixed(2);
+        if (positionSection) {
+          positionSection.dataset.currentPrice = Number(nextQuote.price).toFixed(2);
           renderPositionSection(positionSection);
         }
         const history = loadJson(historyKey, {});
         const next = Array.isArray(history[symbol]) ? history[symbol] : [];
-        if (quote.price && Number.isFinite(Number(quote.price))) {
-          next.push(Number(quote.price));
-          history[symbol] = next.slice(-30);
-          saveJson(historyKey, history);
-          card.querySelector("[data-local-spark]").innerHTML = sparkline(history[symbol]);
-        }
+        next.push(Number(nextQuote.price));
+        history[symbol] = next.slice(-30);
+        saveJson(historyKey, history);
+        card.querySelector("[data-local-spark]").innerHTML = sparkline(history[symbol]);
       }
 
       function refreshLocalQuotes() {
         const symbols = loadWatchlist();
         const pairs = symbols.map((symbol) => [symbol, quoteCode(symbol)]).filter((pair) => pair[1]);
         if (!pairs.length) return;
-        const script = document.createElement("script");
-        script.charset = "gbk";
-        script.src = `https://qt.gtimg.cn/q=${pairs.map((pair) => pair[1]).join(",")}&_=${Date.now()}`;
-        script.onload = () => {
+        fetchTencentQuotes(pairs).then((quotes) => {
           let updated = 0;
-          pairs.forEach(([symbol, code]) => {
-            const raw = window[`v_${code}`];
-            if (!raw) return;
-            const fields = String(raw).split("~");
-            updateLocalQuote(symbol, {
-              name: fields[1],
-              price: fields[3],
-              time: formatTencentTime(fields[30]),
-            });
+          pairs.forEach(([symbol]) => {
+            if (!quotes[symbol]) return;
+            updateLocalQuote(symbol, quotes[symbol]);
             updated += 1;
           });
+          if (updated) renderLocalCards();
           renderPositionSummary();
           if (updated) setLiveStatus("实时行情已更新");
           if (!updated) setLiveStatus("行情源暂时没回，下一轮再试");
-          script.remove();
-        };
-        script.onerror = () => {
-          setLiveStatus("行情源暂时没回，下一轮再试");
-          script.remove();
-        };
-        document.body.appendChild(script);
+        });
       }
 
       function setLiveStatus(text) {
@@ -1557,21 +1724,38 @@
         }
       }
 
-      form?.addEventListener("submit", (event) => {
+      form?.addEventListener("submit", async (event) => {
         event.preventDefault();
-        const added = splitSymbols(input?.value || "");
-        if (!added.length) {
-          setLiveStatus("先输入 6 位股票代码");
+        const resolved = resolvePublicWatchInput(input?.value || "");
+        if (!resolved.ok) {
+          renderPublicWatchFailure(resolved.raw, resolved.reason);
           return;
         }
-        saveWatchlist([...loadWatchlist(), ...added]);
-        if (input) input.value = "";
-        renderLocalCards();
-        refreshLocalQuotes();
-        const first = added[0];
-        const card = findPublicCard(first);
-        if (card) card.scrollIntoView({ behavior: "smooth", block: "center" });
-        setLiveStatus("已加入本页临时监控");
+        setLiveStatus("正在查询行情...");
+        if (publicWatchButton) {
+          publicWatchButton.disabled = true;
+          publicWatchButton.textContent = "查询中";
+        }
+        try {
+          const quote = await lookupPublicQuote(resolved.symbol);
+          if (!quote.ok) {
+            renderPublicWatchFailure(resolved.raw, quote.reason);
+            return;
+          }
+          publicWatchMessage = null;
+          rememberQuote(quote);
+          saveWatchlist([...loadWatchlist(), quote.symbol]);
+          if (input) input.value = "";
+          renderLocalCards();
+          const card = findPublicCard(quote.symbol);
+          if (card) card.scrollIntoView({ behavior: "smooth", block: "center" });
+          setLiveStatus(`已加入本页临时观察：${quote.name} ${quote.symbol}`);
+        } finally {
+          if (publicWatchButton) {
+            publicWatchButton.disabled = false;
+            publicWatchButton.textContent = "加入观察";
+          }
+        }
       });
 
       localGrid?.addEventListener("click", (event) => {
@@ -1664,6 +1848,7 @@
       });
 
       clearButton?.addEventListener("click", () => {
+        publicWatchMessage = null;
         saveWatchlist([]);
         renderLocalCards();
         setLiveStatus("已清空本页临时监控");
