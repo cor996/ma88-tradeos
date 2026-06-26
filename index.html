@@ -201,10 +201,10 @@
       
     </header>
     <div class="banner">公开只读版：只做观察和复盘，不会执行真实交易。</div>
-    <section class="owner-dashboard wait" aria-label="今日概览"><article class="owner-card primary"><span>今日结论</span><strong>现在没有强买卖信号，先等。</strong><p>等下一轮刷新，不急着动。</p></article><article class="owner-card"><span>当前局势</span><strong>中性 · 风险2/5</strong><p>风险词：加息、通胀</p></article><article class="owner-card"><span>监控数量</span><strong>8 只</strong><p>公开页只读，不会改后台监控。</p></article><article class="owner-card action-summary"><span>行动摘要</span><div><b>0</b><em>可关注</em></div><div><b>0</b><em>守止损</em></div><div><b>0</b><em>观察</em></div><div><b>8</b><em>别碰</em></div></article></section>
-    <section class="controlcenter readonly public-live"><div class="control-copy"><span>加股票</span><h2>输入代码，先放进本页观察。</h2><p>公开页不会改后台监控列表。别人输入的代码只存在他自己的浏览器里，只看行情和公开快照。</p></div><form id="publicWatchForm" class="addbar" autocomplete="off"><input id="publicStockInput" name="stocks" inputmode="text" placeholder="输入股票代码，例如 600519, 300750, 000001"><button type="submit">加入观察</button></form><div class="public-actions"><button type="button" id="publicNotifyButton" class="secondary">打开刷新提醒</button><span id="publicLiveStatus" class="live-status"><i></i>每 30 秒看新分析</span></div></section><section id="publicLocalPanel" class="panel public-local-panel" hidden><div class="section-head"><div><h2>我的临时观察</h2><p>只在当前浏览器保存。能显示实时行情；买卖判断以公开快照为准。</p></div><button type="button" id="publicClearButton" class="secondary mini">清空</button></div><div id="publicLocalGrid" class="quickgrid"></div></section>
+    <section class="owner-dashboard wait" aria-label="今日概览"><article class="owner-card primary"><span>今日结论</span><strong>现在没有强买卖信号，先等。</strong><p>等下一轮刷新，不急着动。</p></article><article class="owner-card"><span>当前局势</span><strong>中性 · 风险2/5</strong><p>风险词：加息、通胀</p></article><article class="owner-card"><span>监控数量</span><strong>8 只</strong><p>公开页只读，不会改主监控列表。</p></article><article class="owner-card action-summary"><span>行动摘要</span><div><b>0</b><em>可关注</em></div><div><b>0</b><em>守止损</em></div><div><b>0</b><em>观察</em></div><div><b>8</b><em>别碰</em></div></article></section>
+    <section class="controlcenter readonly public-live"><div class="control-copy"><span>加股票</span><h2>输入代码，先放进本页观察。</h2><p>公开页不会改主监控列表。别人输入的代码只存在他自己的浏览器里，只看行情和公开快照。</p></div><form id="publicWatchForm" class="addbar" autocomplete="off"><input id="publicStockInput" name="stocks" inputmode="text" placeholder="输入股票代码，例如 600519, 300750, 000001"><button type="submit">加入观察</button></form><div class="public-actions"><button type="button" id="publicNotifyButton" class="secondary">打开刷新提醒</button><span id="publicLiveStatus" class="live-status"><i></i>每 30 秒看新分析</span></div></section><section id="publicLocalPanel" class="panel public-local-panel" hidden><div class="section-head"><div><h2>我的临时观察</h2><p>只在当前浏览器保存。能显示实时行情；买卖判断以公开快照为准。</p></div><button type="button" id="publicClearButton" class="secondary mini">清空</button></div><div id="publicLocalGrid" class="quickgrid"></div></section>
     <section class="panel watchstrip" data-updated-at="2026-06-26 09:57:57">
-      <div class="section-head"><div><h2>当前监控</h2><p>横向滑动查看。公开页只读，不会暴露后台控制。</p></div><div class="muted">最新分析：2026-06-26 09:57:57 · 间隔 15 分钟</div></div>
+      <div class="section-head"><div><h2>当前监控</h2><p>横向滑动查看。公开页只读，不会公开本机管理入口。</p></div><div class="muted">最新分析：2026-06-26 09:57:57 · 间隔 15 分钟</div></div>
       <div class="chips"><span class="chip"><span>600519.SH</span></span><span class="chip"><span>000001.SZ</span></span><span class="chip"><span>300750.SZ</span></span><span class="chip"><span>000960.SZ</span></span><span class="chip"><span>688041.SH</span></span><span class="chip"><span>000510.SZ</span></span><span class="chip"><span>688981.SH</span></span><span class="chip"><span>301269.SZ</span></span></div>
     </section>
 
@@ -358,7 +358,7 @@
               <div class="quotegrid"><div><span>最新价</span><b data-local-price>--</b></div><div><span>名称</span><b data-local-name>${escHtml(name || "--")}</b></div><div><span>更新时间</span><b data-local-time>--</b></div></div>
               <div data-local-spark>${sparkline(history[symbol] || [])}</div>
               <div class="points"><div><span>进</span><b>等分析，不追</b></div><div><span>出</span><b>没有进场，就没有出场</b></div></div>
-              <div class="tiny">公开输入不会改后台监控，不会下单。真正判断以下一次公开分析为准。</div>
+              <div class="tiny">公开输入不会改主监控列表，不会下单。真正判断以下一次公开分析为准。</div>
             </article>
           `;
         }).join("");
