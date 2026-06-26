@@ -313,6 +313,15 @@
       font-weight: 800;
       white-space: nowrap;
     }
+    .version-note {
+      max-width: 760px;
+      margin: 9px 0 0;
+      color: rgba(203, 213, 225, .82);
+      font-size: 12px;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+    .version-note b { color: rgba(226, 232, 240, .96); }
     .muted, .label, .sub, .section-head p, details, .tiny { color: var(--muted); }
     a { color: #7dd3fc; }
     button {
@@ -834,6 +843,7 @@
     @media (max-width: 520px) {
       .cadence-card { grid-template-columns: 1fr; width: 100%; }
       .cadence-card span { width: 100%; border-radius: 18px; white-space: normal; }
+      .version-note { font-size: 12px; }
       .kpi-grid { grid-template-columns: 1fr; }
       .kpi-card { min-height: auto; }
       .quotegrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -867,12 +877,13 @@
         <div class="cadence-card" aria-label="观察名单更新状态">
           <span>观察名单：盘后复盘更新</span>
           <span>观察名单版本：2026-06-26 盘中观察版</span>
-          <span>页面版本时间：2026-06-26 13:27</span>
+          <span>页面版本时间：2026-06-26 13:32</span>
           <span>更新节奏：每个交易日 1 次</span>
           <span>复盘状态：等待收盘后人工确认</span>
           <span>行情刷新：打开页面后自动刷新，观察名单不自动变化</span>
           <span>下一轮观察：收盘后再看</span>
         </div>
+        <p class="version-note"><b>版本说明：</b>若收盘后仍显示“盘中观察版”，表示当日盘后复盘尚未发布；行情会刷新，观察名单不自动变化。</p>
       </div>
       
     </header>
