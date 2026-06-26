@@ -352,13 +352,13 @@
             <article class="tradecard public-local-card hold" data-local-symbol="${escHtml(symbol)}">
               <div class="cardtop">
                 <div class="stockid"><strong>${escHtml(name || "等待行情")}</strong><span>${escHtml(symbol)}</span></div>
-                <div class="card-actions"><span class="pill hold">${inSnapshot ? "已在公开分析里" : "本页盯盘"}</span><button type="button" class="mini danger" data-remove-local="${escHtml(symbol)}">移除</button></div>
+                <div class="card-actions"><span class="pill hold">暂时别动</span><button type="button" class="mini danger" data-remove-local="${escHtml(symbol)}">移除</button></div>
               </div>
               <div class="headline">${inSnapshot ? "下面公开卡片有完整判断。" : "先看实时价，买卖等公开分析。"}</div>
               <div class="quotegrid"><div><span>最新价</span><b data-local-price>--</b></div><div><span>名称</span><b data-local-name>${escHtml(name || "--")}</b></div><div><span>更新时间</span><b data-local-time>--</b></div></div>
               <div data-local-spark>${sparkline(history[symbol] || [])}</div>
               <div class="points"><div><span>进</span><b>等分析，不追</b></div><div><span>出</span><b>没有进场，就没有出场</b></div></div>
-              <div class="tiny">公开输入不会改主监控，不会下单。真正买卖点以 TradeOS 下一次公开分析为准。</div>
+              <div class="tiny">公开输入不会改后台监控，不会下单。真正判断以下一次公开分析为准。</div>
             </article>
           `;
         }).join("");
@@ -434,7 +434,7 @@
           const nextUpdated = doc.querySelector("[data-updated-at]")?.dataset.updatedAt || "";
           if (lastUpdated && nextUpdated && nextUpdated !== lastUpdated) {
             setLiveStatus("有新分析，正在刷新");
-            notify("TradeOS 有新分析", "页面正在刷新，看看有没有新的进出点。");
+            notify("MA88 有新分析", "页面正在刷新，看看有没有新的进出点。");
             location.reload();
             return;
           }
