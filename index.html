@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <meta http-equiv="refresh" content="30">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MA88 Stock Observation Dashboard</title>
+  <title>马董股票观察台</title>
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; background: radial-gradient(circle at 12% 0%, rgba(23, 105, 224, .10), transparent 28%), linear-gradient(180deg, #f8fafc 0%, #eef2f6 100%); color: #111827; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin: 0; background: radial-gradient(circle at 14% 0%, rgba(37, 99, 235, .34), transparent 28%), radial-gradient(circle at 86% 8%, rgba(20, 184, 166, .16), transparent 24%), linear-gradient(180deg, #07111f 0%, #111827 36%, #eef2f6 36%, #eef2f6 100%); color: #111827; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     main { max-width: 1240px; margin: 0 auto; padding: 22px 18px 54px; }
-    header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+    header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; color: #f8fafc; }
+    header .muted, header .safetyline { color: rgba(248,250,252,.78); }
     h1 { margin: 0 0 6px; font-size: 34px; letter-spacing: 0; }
     h2 { margin: 22px 0 10px; font-size: 20px; }
     .muted, .label, .sub { color: #667085; }
@@ -34,16 +35,18 @@
     .banner { margin: 12px 0; padding: 11px 12px; background: #ecfdf3; border: 1px solid #abefc6; border-radius: 8px; color: #067647; font-weight: 700; }
     .safetyline { margin-top: 8px; color: #475467; font-size: 13px; line-height: 1.45; }
     .owner-dashboard { display: grid; grid-template-columns: 1.25fr .95fr .7fr 1fr; gap: 12px; margin: 14px 0; }
-    .owner-card { min-height: 126px; display: grid; align-content: start; gap: 7px; background: rgba(255,255,255,.94); border: 1px solid #d8dee6; border-radius: 14px; padding: 15px; box-shadow: 0 14px 34px rgba(15, 23, 42, .06); }
-    .owner-card.primary { border-color: #fedf89; background: linear-gradient(135deg, #fffbeb, #ffffff); }
+    .owner-card { min-height: 126px; display: grid; align-content: start; gap: 7px; background: rgba(255,255,255,.94); border: 1px solid rgba(255,255,255,.58); border-radius: 14px; padding: 15px; box-shadow: 0 20px 48px rgba(2, 6, 23, .18); backdrop-filter: blur(14px); }
+    .owner-card.primary { border-color: #fedf89; background: linear-gradient(135deg, #fff7d6, #ffffff); }
     .owner-card span { color: #667085; font-size: 12px; font-weight: 900; letter-spacing: .02em; }
     .owner-card strong { font-size: 22px; line-height: 1.18; }
     .owner-card p { margin: 0; color: #667085; line-height: 1.45; }
-    .action-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: stretch; }
-    .action-summary > span { grid-column: 1 / -1; }
-    .action-summary div { border: 1px solid #edf0f3; background: #f8fafc; border-radius: 10px; padding: 8px; }
-    .action-summary b { display: block; font-size: 20px; }
-    .action-summary em { display: block; color: #667085; font-style: normal; font-size: 12px; }
+    .position-summary-card { align-content: start; }
+    .position-summary-card.positive strong { color: #067647; }
+    .position-summary-card.negative strong { color: #b42333; }
+    .position-summary-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 2px; }
+    .position-summary-grid div { border: 1px solid #edf0f3; background: #f8fafc; border-radius: 10px; padding: 8px; min-width: 0; }
+    .position-summary-grid b { display: block; overflow-wrap: anywhere; font-size: 17px; }
+    .position-summary-grid em { display: block; color: #667085; font-style: normal; font-size: 11px; }
     .watchstrip { margin: 12px 0 16px; }
     .watchstrip .chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 3px; scrollbar-width: thin; }
     .watchstrip .chip { flex: 0 0 auto; }
@@ -117,7 +120,7 @@
     .quotegrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
     .quotegrid div { border: 1px solid #edf0f3; border-radius: 8px; padding: 8px 9px; background: #fff; min-width: 0; }
     .quotegrid span { display: block; color: #667085; font-size: 12px; margin-bottom: 3px; }
-    .quotegrid b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+    .quotegrid b { display: block; overflow-wrap: anywhere; line-height: 1.2; font-size: 14px; }
     .move.up { color: #067647; }
     .move.down { color: #b42333; }
     .move.flat { color: #475467; }
@@ -146,6 +149,38 @@
     .sparkline span { color: #667085; font-size: 12px; }
     .sparkline b { font-size: 13px; white-space: nowrap; }
     .spark-empty { min-height: 46px; display: grid; place-items: center; color: #98a2b3; border: 1px dashed #d8dee6; border-radius: 10px; background: #f8fafc; }
+    .positionbox { border: 1px solid #d8dee6; border-radius: 12px; padding: 12px; background: linear-gradient(135deg, #0f172a, #172033); color: #f8fafc; box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 12px 28px rgba(15, 23, 42, .14); }
+    .positionbox.empty { background: linear-gradient(135deg, #111827, #1f2937); }
+    .positionbox.positive { border-color: rgba(18, 183, 106, .48); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 14px 32px rgba(18, 183, 106, .16); }
+    .positionbox.negative, .positionbox.stop { border-color: rgba(240, 68, 56, .48); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 14px 32px rgba(240, 68, 56, .13); }
+    .positionbox.target { border-color: rgba(251, 191, 36, .58); }
+    .position-loading { color: rgba(248,250,252,.78); font-size: 13px; }
+    .position-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+    .position-head span { display: block; color: rgba(248,250,252,.68); font-size: 12px; font-weight: 850; }
+    .position-head strong { display: block; margin-top: 2px; font-size: 20px; line-height: 1.15; }
+    .position-head p { margin: 4px 0 0; color: rgba(248,250,252,.68); font-size: 12px; }
+    .position-status { display: inline-flex; align-items: center; white-space: nowrap; border-radius: 999px; padding: 5px 8px; background: rgba(255,255,255,.10); color: #f8fafc; font-size: 12px; font-weight: 900; }
+    .position-status.positive { color: #abefc6; background: rgba(18,183,106,.14); }
+    .position-status.negative, .position-status.stop { color: #fecdd6; background: rgba(240,68,56,.16); }
+    .position-status.target { color: #fde68a; background: rgba(251,191,36,.16); }
+    .position-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .position-metrics div { border: 1px solid rgba(255,255,255,.11); border-radius: 10px; padding: 9px; background: rgba(255,255,255,.07); min-width: 0; }
+    .position-metrics span { display: block; margin-bottom: 4px; color: rgba(248,250,252,.64); font-size: 12px; }
+    .position-metrics b { display: block; overflow-wrap: anywhere; font-size: 16px; line-height: 1.22; }
+    .position-metrics .wide { grid-column: 1 / -1; }
+    .position-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .position-actions button { min-height: 34px; }
+    .position-actions .ghost { color: #dbeafe; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); box-shadow: none; }
+    .position-actions .danger { background: rgba(240,68,56,.16); color: #fecdd6; border: 1px solid rgba(240,68,56,.28); box-shadow: none; }
+    .position-form { display: grid; gap: 10px; }
+    .position-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .position-form label { display: grid; gap: 4px; color: rgba(248,250,252,.74); font-size: 12px; font-weight: 750; }
+    .position-form input { min-height: 40px; color: #111827; border-color: rgba(255,255,255,.16); }
+    .position-form .note-field { grid-column: 1 / -1; }
+    .position-help { margin: 8px 0 0; color: rgba(248,250,252,.66); font-size: 12px; line-height: 1.45; }
+    .money-positive { color: #abefc6; }
+    .money-negative { color: #fecdd6; }
+    .money-flat { color: #f8fafc; }
     .points { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .points div { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 11px; background: #f9fafb; min-height: 72px; }
     .points span { display: block; color: #667085; font-size: 13px; margin-bottom: 4px; }
@@ -186,38 +221,609 @@
     @keyframes floatIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes pulseDot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(.72); opacity: .62; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
-    @media (max-width: 900px) { main { padding: 14px 12px 42px; } header, .controls, .grid2, .owner-dashboard, .scanboard, .scan-lists, .controlcenter, .controlcenter.readonly, .public-live, .addbar, .section-head { grid-template-columns: 1fr !important; display: grid; } h1 { font-size: 27px; } .owner-card { min-height: auto; } .action-summary { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; } .quickgrid { grid-template-columns: 1fr; } .quotegrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .keygrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .points { grid-template-columns: 1fr; } .headline { font-size: 20px; } .stockid strong { font-size: 21px; } .quick-refresh button, .addbar button { width: 100%; } }
-    @media (max-width: 420px) { .quotegrid b, .keygrid b { font-size: 13px; } .owner-card strong { font-size: 20px; } .action-summary { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+    @media (max-width: 900px) { main { padding: 14px 12px 42px; } header, .controls, .grid2, .owner-dashboard, .scanboard, .scan-lists, .controlcenter, .controlcenter.readonly, .public-live, .addbar, .section-head { grid-template-columns: 1fr !important; display: grid; } h1 { font-size: 27px; } .owner-card { min-height: auto; } .position-summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } .quickgrid { grid-template-columns: 1fr; } .quotegrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .keygrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .points { grid-template-columns: 1fr; } .headline { font-size: 20px; } .stockid strong { font-size: 21px; } .quick-refresh button, .addbar button { width: 100%; } }
+    @media (max-width: 420px) { .quotegrid b, .keygrid b { font-size: 13px; } .owner-card strong { font-size: 20px; } .position-summary-grid, .position-metrics, .position-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+    :root {
+      --bg: #070a12;
+      --bg-2: #0b1020;
+      --panel: rgba(14, 20, 37, .78);
+      --panel-strong: rgba(20, 29, 52, .92);
+      --card: rgba(15, 23, 42, .78);
+      --card-2: rgba(22, 31, 55, .88);
+      --border: rgba(148, 163, 184, .18);
+      --border-strong: rgba(148, 163, 184, .28);
+      --text: #eef4ff;
+      --muted: #8ea0bb;
+      --muted-2: #64748b;
+      --positive: #22c55e;
+      --negative: #fb7185;
+      --warning: #fbbf24;
+      --danger: #f43f5e;
+      --accent: #38bdf8;
+      --accent-2: #a78bfa;
+      --glow: 0 24px 70px rgba(2, 8, 23, .48);
+      --soft-glow: 0 18px 48px rgba(15, 23, 42, .34);
+      --ease: cubic-bezier(.2,.8,.2,1);
+    }
+
+    html { background: var(--bg); }
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% -8%, rgba(56, 189, 248, .22), transparent 34%),
+        radial-gradient(circle at 86% 2%, rgba(167, 139, 250, .18), transparent 28%),
+        radial-gradient(circle at 44% 26%, rgba(251, 191, 36, .08), transparent 24%),
+        linear-gradient(180deg, #070a12 0%, #0b1020 48%, #070a12 100%);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(148,163,184,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,.035) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.72), transparent 74%);
+    }
+    main { max-width: 1480px; padding: 20px 16px 60px; animation: floatIn .34s var(--ease) both; }
+    header {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      margin: 0 0 14px;
+      padding: 18px 18px 0;
+      color: var(--text);
+    }
+    h1 {
+      font-size: clamp(28px, 5vw, 56px);
+      line-height: .98;
+      letter-spacing: 0;
+      text-shadow: 0 0 34px rgba(56, 189, 248, .18);
+    }
+    h2 { color: var(--text); font-size: clamp(20px, 3vw, 31px); }
+    header .muted { color: var(--muted); font-weight: 800; margin-top: 8px; }
+    .safetyline {
+      display: inline-flex;
+      width: fit-content;
+      max-width: 100%;
+      margin-top: 12px;
+      padding: 9px 12px;
+      border: 1px solid rgba(251,191,36,.25);
+      border-radius: 999px;
+      color: #fde68a !important;
+      background: rgba(251,191,36,.08);
+      font-size: 13px;
+    }
+    .muted, .label, .sub, .section-head p, details, .tiny { color: var(--muted); }
+    a { color: #7dd3fc; }
+    button {
+      min-height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(125, 211, 252, .28);
+      color: #04111f;
+      background: linear-gradient(135deg, #7dd3fc, #22c55e);
+      box-shadow: 0 16px 36px rgba(34, 197, 94, .14), inset 0 1px 0 rgba(255,255,255,.38);
+      transition: transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s ease, filter .2s ease;
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 22px 48px rgba(56, 189, 248, .20); }
+    button.secondary, button.ghost, .position-actions .ghost {
+      color: var(--text);
+      background: rgba(148, 163, 184, .10);
+      border: 1px solid var(--border-strong);
+      box-shadow: none;
+    }
+    button.danger, .position-actions .danger, .danger button {
+      color: #ffe4e6;
+      background: rgba(244, 63, 94, .12);
+      border: 1px solid rgba(244, 63, 94, .32);
+      box-shadow: none;
+    }
+    .subtle-action {
+      min-height: 34px;
+      justify-self: start;
+      margin-top: 2px;
+      padding: 0 13px;
+      color: #dbeafe;
+      background: rgba(56, 189, 248, .12);
+      border-color: rgba(56, 189, 248, .28);
+      box-shadow: none;
+    }
+    input {
+      min-height: 46px;
+      color: var(--text);
+      background: rgba(2, 6, 23, .58);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    input::placeholder { color: rgba(142,160,187,.72); }
+    input:focus { border-color: rgba(56,189,248,.68); box-shadow: 0 0 0 4px rgba(56,189,248,.12); }
+
+    .hero-dashboard {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(300px, .82fr) minmax(0, 1.18fr);
+      gap: 16px;
+      margin: 10px 0 18px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(15,23,42,.92), rgba(15,23,42,.58)),
+        radial-gradient(circle at 10% 12%, rgba(56,189,248,.16), transparent 34%),
+        radial-gradient(circle at 90% 18%, rgba(251,191,36,.10), transparent 28%);
+      box-shadow: var(--glow);
+      overflow: hidden;
+    }
+    .hero-dashboard::after {
+      content: "";
+      position: absolute;
+      inset: auto 24px 0 24px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56,189,248,.5), rgba(251,191,36,.38), transparent);
+    }
+    .hero-copy {
+      position: relative;
+      min-height: 230px;
+      display: grid;
+      align-content: center;
+      gap: 10px;
+      padding: 18px 14px;
+    }
+    .eyebrow, .control-copy span, .scan-main span, .mini-title span, .kpi-card span, .reason-preview span {
+      color: #7dd3fc;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .hero-copy h2 { margin: 0; max-width: 780px; font-size: clamp(34px, 5vw, 64px); line-height: 1.02; }
+    .hero-copy p { max-width: 520px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .kpi-card, .owner-card {
+      min-height: 148px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 16px;
+      color: var(--text);
+      background: linear-gradient(180deg, rgba(30,41,59,.86), rgba(15,23,42,.64));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 18px 42px rgba(2,6,23,.28);
+      backdrop-filter: blur(18px);
+    }
+    .kpi-card strong, .owner-card strong {
+      color: var(--text);
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1.06;
+      overflow-wrap: anywhere;
+    }
+    .kpi-card p, .owner-card p { color: var(--muted); line-height: 1.45; }
+    .risk-kpi strong { color: #dbeafe; }
+    .position-summary-card.positive strong, .money-positive { color: #86efac; text-shadow: 0 0 24px rgba(34,197,94,.20); }
+    .position-summary-card.negative strong, .money-negative { color: #fda4af; text-shadow: 0 0 24px rgba(244,63,94,.18); }
+    .money-flat { color: var(--text); }
+    .position-summary-grid { gap: 8px; }
+    .position-summary-grid div {
+      border: 1px solid rgba(148,163,184,.15);
+      background: rgba(2,6,23,.30);
+      border-radius: 14px;
+      padding: 9px;
+    }
+    .position-summary-grid b { color: var(--text); font-size: 18px; }
+    .position-summary-grid em { color: var(--muted); }
+
+    .position-workspace {
+      position: relative;
+      display: grid;
+      gap: 16px;
+      margin: 18px 0;
+      padding: 18px;
+      border-radius: 28px;
+      border: 1px solid rgba(125,211,252,.22);
+      background:
+        linear-gradient(135deg, rgba(15,23,42,.94), rgba(30,41,59,.68)),
+        radial-gradient(circle at 12% 0%, rgba(56,189,248,.15), transparent 34%),
+        radial-gradient(circle at 100% 10%, rgba(34,197,94,.11), transparent 28%);
+      box-shadow: 0 24px 72px rgba(2,6,23,.46);
+      overflow: hidden;
+    }
+    .position-workspace::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(125,211,252,.55), rgba(34,197,94,.28), transparent);
+    }
+    .workspace-head {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .workspace-head h2 { margin: 4px 0 6px; }
+    .workspace-head p, .workspace-help { margin: 0; color: var(--muted); line-height: 1.5; }
+    .workspace-help {
+      min-height: 22px;
+      padding: 9px 11px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,.12);
+      background: rgba(2,6,23,.24);
+    }
+    .workspace-help[data-tone="ok"] {
+      color: #bbf7d0;
+      border-color: rgba(34,197,94,.22);
+      background: rgba(34,197,94,.08);
+    }
+    .workspace-help[data-tone="warning"] {
+      color: #fde68a;
+      border-color: rgba(251,191,36,.24);
+      background: rgba(251,191,36,.08);
+    }
+    .workspace-badge {
+      flex: 0 0 auto;
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: #bbf7d0;
+      border: 1px solid rgba(34,197,94,.25);
+      background: rgba(34,197,94,.10);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .position-search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(280px, .92fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+    .search-field, .position-record-form label {
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+    }
+    .selected-stock-card {
+      display: grid;
+      align-content: center;
+      gap: 5px;
+      min-height: 82px;
+      padding: 13px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,.16);
+      background: rgba(2,6,23,.34);
+    }
+    .selected-stock-card span { color: #7dd3fc; font-size: 12px; font-weight: 900; letter-spacing: .06em; }
+    .selected-stock-card strong { color: var(--text); font-size: clamp(18px, 2.2vw, 25px); line-height: 1.2; }
+    .selected-stock-card p { margin: 0; color: var(--muted); line-height: 1.45; }
+    .match-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 8px;
+    }
+    .match-option {
+      display: grid;
+      justify-items: start;
+      gap: 3px;
+      min-height: 72px;
+      padding: 10px 12px;
+      color: var(--text);
+      text-align: left;
+      border-radius: 16px;
+      border: 1px solid rgba(125,211,252,.20);
+      background: rgba(2,6,23,.38);
+      box-shadow: none;
+    }
+    .match-option span { font-weight: 900; }
+    .match-option b { color: #7dd3fc; }
+    .match-option em { color: var(--muted); font-style: normal; font-size: 12px; }
+    .match-empty {
+      padding: 12px 14px;
+      border: 1px solid rgba(251,191,36,.24);
+      border-radius: 16px;
+      color: #fde68a;
+      background: rgba(251,191,36,.08);
+    }
+    .position-record-form {
+      display: grid;
+      gap: 12px;
+    }
+    .workspace-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+    .workspace-actions button { min-width: 142px; }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+      transform: none !important;
+      box-shadow: none !important;
+      filter: grayscale(.35);
+    }
+
+    .panel, .box, .controlcenter, .scanboard, .public-local-panel {
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--soft-glow);
+      backdrop-filter: blur(18px);
+    }
+    .controlcenter, .controlcenter.readonly, .public-live {
+      grid-template-columns: minmax(260px, .92fr) minmax(300px, 1.08fr) minmax(180px, .48fr) !important;
+      background: linear-gradient(135deg, rgba(15,23,42,.88), rgba(30,41,59,.62));
+      border-color: rgba(56,189,248,.18);
+    }
+    .control-copy h2 { color: var(--text); }
+    .control-copy p, .section-head p { color: var(--muted); }
+    .addbar { gap: 10px; }
+    .live-status { color: #cbd5e1; }
+    .chip {
+      color: #dbeafe;
+      background: rgba(15,23,42,.72);
+      border: 1px solid var(--border);
+    }
+
+    .scanboard {
+      grid-template-columns: minmax(280px, .72fr) minmax(0, 1.28fr);
+      background: linear-gradient(135deg, rgba(17,24,39,.94), rgba(15,23,42,.70));
+    }
+    .scanboard.hold, .scanboard.buy {
+      border-color: var(--border);
+      background:
+        linear-gradient(135deg, rgba(17,24,39,.94), rgba(15,23,42,.72)),
+        radial-gradient(circle at 12% 0%, rgba(56,189,248,.10), transparent 30%);
+      box-shadow: var(--soft-glow);
+    }
+    .scan-main h2 { color: var(--text); font-size: clamp(25px, 3vw, 38px); }
+    .scan-main p { color: var(--muted); }
+    .scan-lists > div, .scan-lists li {
+      color: var(--text);
+      background: rgba(2,6,23,.34);
+      border-color: var(--border);
+      border-radius: 16px;
+    }
+    .scan-lists li span { color: var(--muted); }
+
+    .quickgrid { grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 18px; }
+    .tradecard {
+      color: var(--text);
+      gap: 14px;
+      padding: 18px;
+      border-radius: 26px;
+      background:
+        linear-gradient(180deg, rgba(30,41,59,.82), rgba(15,23,42,.92)),
+        radial-gradient(circle at 20% 0%, rgba(56,189,248,.12), transparent 30%);
+      border: 1px solid var(--border);
+      box-shadow: 0 22px 64px rgba(2,6,23,.42);
+      overflow: hidden;
+    }
+    .tradecard::before { width: 2px; opacity: .95; }
+    .tradecard:hover { transform: translateY(-4px); border-color: rgba(125,211,252,.32); box-shadow: 0 30px 82px rgba(2,6,23,.56); }
+    .tradecard.buy, .tradecard.sell, .tradecard.no-buy, .tradecard.no-sell, .tradecard.blocked, .tradecard.expensive, .tradecard.hold {
+      background:
+        linear-gradient(180deg, rgba(30,41,59,.82), rgba(15,23,42,.94)),
+        radial-gradient(circle at 20% -4%, rgba(56,189,248,.14), transparent 32%);
+    }
+    .tradecard.buy { border-color: rgba(34,197,94,.40); }
+    .tradecard.no-sell, .tradecard.no-buy, .tradecard.expensive { border-color: rgba(251,191,36,.30); }
+    .tradecard.blocked, .tradecard.sell { border-color: rgba(244,63,94,.34); }
+    .stock-card-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, auto); gap: 12px; align-items: start; }
+    .stockid strong { color: var(--text); font-size: clamp(24px, 3vw, 36px); }
+    .stockid span { color: var(--muted); }
+    .price-focus {
+      min-width: 148px;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,.16);
+      background: rgba(2,6,23,.34);
+      text-align: right;
+    }
+    .price-focus span, .price-focus small { display: block; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .price-focus strong { display: block; margin: 2px 0; color: var(--text); font-size: clamp(30px, 4vw, 52px); line-height: 1; }
+    .price-focus em { display: block; font-style: normal; font-weight: 900; }
+    .headline { color: var(--text); font-size: clamp(21px, 2.2vw, 30px); line-height: 1.22; }
+    .stock-card-body { display: grid; grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr); gap: 12px; align-items: stretch; }
+    .strategy-panel, .position-panel {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+      padding: 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,.14);
+      background: rgba(2,6,23,.26);
+    }
+    .mini-title { display: flex; align-items: center; gap: 8px; color: var(--text); }
+    .mini-title span {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      color: #03101f;
+      background: linear-gradient(135deg, #7dd3fc, #fbbf24);
+    }
+    .mini-title b { color: var(--text); }
+    .quotegrid div, .keygrid div, .strategybar div, .points div {
+      color: var(--text);
+      border-color: rgba(148,163,184,.14);
+      background: rgba(15,23,42,.58);
+      border-radius: 14px;
+    }
+    .quotegrid span, .keygrid span, .strategybar span, .points span { color: var(--muted); }
+    .quotegrid b, .keygrid b, .strategybar b, .points b { color: var(--text); }
+    .keygrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .risk.ok { color: #86efac; }
+    .risk.bad { color: #fda4af; }
+    .move.up { color: #86efac; }
+    .move.down { color: #fda4af; }
+    .move.flat { color: var(--muted); }
+    .pill {
+      color: var(--text);
+      background: rgba(148,163,184,.14);
+      border: 1px solid rgba(148,163,184,.16);
+      box-shadow: none;
+    }
+    .pill.buy { color: #bbf7d0; background: rgba(34,197,94,.14); border-color: rgba(34,197,94,.25); }
+    .pill.no-buy, .pill.no-sell, .pill.expensive { color: #fde68a; background: rgba(251,191,36,.12); border-color: rgba(251,191,36,.25); }
+    .pill.blocked, .pill.sell { color: #fecdd3; background: rgba(244,63,94,.12); border-color: rgba(244,63,94,.25); }
+    .sparkline {
+      color: #7dd3fc;
+      min-height: 92px;
+      border-radius: 18px;
+      background: rgba(2,6,23,.34) !important;
+      border: 1px solid rgba(148,163,184,.14) !important;
+    }
+    .sparkline svg { height: 62px; }
+    .sparkline line { stroke: rgba(148,163,184,.18); }
+    .sparkline polyline { stroke-width: 3.5; filter: drop-shadow(0 0 9px currentColor); }
+    .sparkline.buy { color: #4ade80; }
+    .sparkline.no-buy, .sparkline.no-sell, .sparkline.expensive { color: #fbbf24; }
+    .sparkline.sell, .sparkline.blocked { color: #fb7185; }
+    .sparkline span { color: var(--muted); }
+    .sparkline b { color: var(--text); }
+    .spark-empty { color: var(--muted); background: rgba(2,6,23,.34); border-color: var(--border); }
+
+    .positionbox {
+      min-height: 100%;
+      border-radius: 20px;
+      border: 1px solid rgba(125,211,252,.18);
+      background:
+        linear-gradient(135deg, rgba(8,13,26,.95), rgba(15,23,42,.76)),
+        radial-gradient(circle at 0% 0%, rgba(56,189,248,.13), transparent 34%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 14px 32px rgba(2,6,23,.26);
+    }
+    .positionbox.empty { background: linear-gradient(135deg, rgba(8,13,26,.95), rgba(15,23,42,.72)); }
+    .positionbox.editing { border-color: rgba(251,191,36,.34); box-shadow: 0 20px 54px rgba(251,191,36,.08); }
+    .position-empty-copy {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .position-head strong { color: var(--text); font-size: clamp(18px, 2vw, 24px); }
+    .position-head span, .position-help, .position-metrics span, .position-form label { color: var(--muted); }
+    .position-status { color: var(--text); background: rgba(148,163,184,.12); border: 1px solid rgba(148,163,184,.14); }
+    .position-status.positive { color: #bbf7d0; background: rgba(34,197,94,.12); }
+    .position-status.negative, .position-status.stop { color: #fecdd3; background: rgba(244,63,94,.12); }
+    .position-status.target { color: #fde68a; background: rgba(251,191,36,.12); }
+    .position-metrics div {
+      border-color: rgba(148,163,184,.12);
+      background: rgba(15,23,42,.62);
+      border-radius: 14px;
+    }
+    .position-metrics b { color: var(--text); font-size: 15px; }
+    .position-form-grid { gap: 10px; }
+    .position-form input { color: var(--text); background: rgba(2,6,23,.50); border-color: rgba(148,163,184,.20); }
+    .position-actions button { min-height: 36px; }
+    .text-action {
+      min-height: 30px !important;
+      padding: 0 !important;
+      color: #7dd3fc !important;
+      background: transparent !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      text-align: left;
+    }
+    .reason-preview {
+      background: rgba(2,6,23,.24);
+      border-color: rgba(148,163,184,.14);
+      border-radius: 18px;
+    }
+    .reason-preview ul { color: #dbeafe; padding-left: 18px; }
+    .reason-preview li { margin: 5px 0; }
+    .more-hint { color: var(--muted); }
+    .card-details { border-top: 1px solid rgba(148,163,184,.14); padding-top: 10px; }
+    .tradecard details[open], .detail-section, .detail-section[open] {
+      color: #dbeafe;
+      background: rgba(2,6,23,.36);
+      border-color: rgba(148,163,184,.14);
+      border-radius: 16px;
+    }
+    .tradecard summary { color: #7dd3fc; list-style-position: inside; }
+    pre {
+      color: #cbd5e1;
+      background: rgba(2,6,23,.54);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+    .grid2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    @media (max-width: 980px) {
+      main { padding: 14px 10px 46px; }
+      header { padding: 12px 8px 0; grid-template-columns: 1fr; }
+      .hero-dashboard, .stock-card-body, .scanboard, .controlcenter, .controlcenter.readonly, .public-live, .grid2 {
+        grid-template-columns: 1fr !important;
+      }
+      .position-search-row, .workspace-head {
+        grid-template-columns: 1fr !important;
+        display: grid;
+      }
+      .hero-dashboard { padding: 12px; border-radius: 24px; }
+      .position-workspace { padding: 14px; border-radius: 24px; }
+      .hero-copy { min-height: auto; padding: 12px 6px; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .quickgrid { grid-template-columns: 1fr; }
+      .stock-card-hero { grid-template-columns: 1fr; }
+      .price-focus { text-align: left; }
+      .section-head { display: grid; grid-template-columns: 1fr !important; }
+      .addbar { grid-template-columns: 1fr; }
+      .addbar button, .public-actions button, .workspace-actions button { width: 100%; }
+    }
+    @media (max-width: 520px) {
+      .safetyline { border-radius: 18px; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .kpi-card { min-height: auto; }
+      .quotegrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .quotegrid div { padding: 8px; }
+      .stockid strong { font-size: 25px; white-space: normal; }
+      .price-focus strong { font-size: 38px; }
+      .keygrid, .position-metrics, .position-form-grid, .position-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+      .position-record-form .position-form-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .position-head { display: grid; }
+      .position-actions button { width: 100%; }
+      .scan-lists { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <main>
     <header>
       <div>
-        <h1>MA88 Stock Observation Dashboard</h1>
-        <div class="muted">AI-assisted market observation · Read-only mode · No automatic trading</div>
+        <h1>马董股票观察台</h1>
+        <div class="muted">AI辅助观察 · 本地持仓记录 · 人工确认决策</div>
         <div class="safetyline">本页面仅用于辅助观察和复盘，不构成投资建议，也不会执行真实交易。</div>
       </div>
       
     </header>
     <div class="banner">公开只读版：只做观察和复盘，不会执行真实交易。</div>
-    <section class="owner-dashboard wait" aria-label="今日概览"><article class="owner-card primary"><span>今日结论</span><strong>现在没有强买卖信号，先等。</strong><p>等下一轮刷新，不急着动。</p></article><article class="owner-card"><span>当前局势</span><strong>中性 · 风险2/5</strong><p>风险词：加息、通胀</p></article><article class="owner-card"><span>监控数量</span><strong>8 只</strong><p>公开页只读，不会改主监控列表。</p></article><article class="owner-card action-summary"><span>行动摘要</span><div><b>0</b><em>可关注</em></div><div><b>0</b><em>守止损</em></div><div><b>0</b><em>观察</em></div><div><b>8</b><em>别碰</em></div></article></section>
-    <section class="controlcenter readonly public-live"><div class="control-copy"><span>加股票</span><h2>输入代码，先放进本页观察。</h2><p>公开页不会改主监控列表。别人输入的代码只存在他自己的浏览器里，只看行情和公开快照。</p></div><form id="publicWatchForm" class="addbar" autocomplete="off"><input id="publicStockInput" name="stocks" inputmode="text" placeholder="输入股票代码，例如 600519, 300750, 000001"><button type="submit">加入观察</button></form><div class="public-actions"><button type="button" id="publicNotifyButton" class="secondary">打开刷新提醒</button><span id="publicLiveStatus" class="live-status"><i></i>每 30 秒看新分析</span></div></section><section id="publicLocalPanel" class="panel public-local-panel" hidden><div class="section-head"><div><h2>我的临时观察</h2><p>只在当前浏览器保存。能显示实时行情；买卖判断以公开快照为准。</p></div><button type="button" id="publicClearButton" class="secondary mini">清空</button></div><div id="publicLocalGrid" class="quickgrid"></div></section>
-    <section class="panel watchstrip" data-updated-at="2026-06-26 09:57:57">
-      <div class="section-head"><div><h2>当前监控</h2><p>横向滑动查看。公开页只读，不会公开本机管理入口。</p></div><div class="muted">最新分析：2026-06-26 09:57:57 · 间隔 15 分钟</div></div>
+    <section class="hero-dashboard wait" aria-label="今日驾驶舱"><div class="hero-copy"><span class="eyebrow">今日结论</span><h2>暂时没有强买点，已有仓先守止损。</h2><p>重点看每张卡里的止损价。</p></div><div class="kpi-grid"><article class="kpi-card risk-kpi"><span>当前风险</span><strong>中性 · 风险0/5</strong><p>风险词：利好、加息、反弹</p></article><article class="kpi-card"><span>监控数量</span><strong>8 只</strong><p>公开页面不会改主监控列表。</p></article><article class="kpi-card position-count-card" id="positionCountCard"><span>我的持仓</span><strong>0 只</strong><p>还没有记录入场。可在下方输入股票代码或名称，记录后会自动计算当前账面盈亏。</p></article><article class="kpi-card position-summary-card" id="positionSummaryCard"><span>当前总浮盈/浮亏</span><strong>暂无持仓</strong><p>记录入场价后，这里会显示总浮盈/浮亏。</p><div class="position-summary-grid"><div><b>0</b><em>已记录</em></div><div><b>--</b><em>当前账面结果</em></div><div><b>0</b><em>接近止损</em></div><div><b>0</b><em>接近目标</em></div></div></article></div></section>
+    <section class="position-workspace" id="positionWorkspace" aria-label="马董持仓记录窗口"><div class="workspace-head"><div><span class="eyebrow">本地记录</span><h2>马董持仓记录窗口</h2><p>输入当前监控里的股票代码或名称，记录后只保存在当前浏览器。</p></div><div class="workspace-badge">不会同步给其他人</div></div><div class="position-search-row"><label class="search-field">股票搜索<input id="positionSearchInput" type="search" autocomplete="off" placeholder="输入股票代码或名称，例如 000001、平安银行、贵州茅台"></label><div class="selected-stock-card" id="positionSelectedCard"><span>当前选择</span><strong id="positionSelectedText">还未选择股票</strong><p id="positionSelectedMeta">先输入代码或名称，系统会从当前监控列表里匹配。</p></div></div><div class="match-list" id="positionMatchList" hidden></div><form id="positionRecordForm" class="position-record-form" autocomplete="off" novalidate><div class="position-form-grid"><label>入场价<input name="entryPrice" inputmode="decimal" placeholder="例如 10.50" required disabled></label><label>持仓数量<input name="quantity" inputmode="decimal" placeholder="例如 1000，可不填" disabled></label><label>计划出场价<input name="plannedExitPrice" inputmode="decimal" placeholder="例如 11.20" disabled></label><label>止损价<input name="stopLossPrice" inputmode="decimal" placeholder="例如 10.00" disabled></label><label>入场日期<input name="entryDate" type="date" disabled></label><label class="note-field">备注<input name="note" placeholder="可选，例如分批记录、复盘原因" disabled></label></div><div class="workspace-actions"><button type="submit" disabled>保存本地持仓</button><button type="button" class="ghost" id="positionClearButton" disabled>清空</button><button type="button" class="danger" id="positionDeleteButton" disabled>删除这只股票的本地记录</button></div><p class="workspace-help" id="positionWindowStatus" role="status" aria-live="polite">当前还没有选择股票。当前盈亏为粗略估算，暂未计算手续费、税费和滑点。</p></form></section>
+    <section class="controlcenter readonly public-live"><div class="control-copy"><span>加股票</span><h2>输入代码，先放进本页观察。</h2><p>公开页面不会改主监控列表。别人输入的代码只存在他自己的浏览器里，只看行情和公开快照。</p></div><form id="publicWatchForm" class="addbar" autocomplete="off"><input id="publicStockInput" name="stocks" inputmode="text" placeholder="输入股票代码，例如 600519, 300750, 000001"><button type="submit">加入观察</button></form><div class="public-actions"><button type="button" id="publicNotifyButton" class="secondary">打开刷新提醒</button><span id="publicLiveStatus" class="live-status"><i></i>每 30 秒看新分析</span></div></section><section id="publicLocalPanel" class="panel public-local-panel" hidden><div class="section-head"><div><h2>我的临时观察</h2><p>只在当前浏览器保存。能显示实时行情；买卖判断以公开快照为准。</p></div><button type="button" id="publicClearButton" class="secondary mini">清空</button></div><div id="publicLocalGrid" class="quickgrid"></div></section>
+    <section class="panel watchstrip" data-updated-at="2026-06-26 11:13:43">
+      <div class="section-head"><div><h2>当前监控</h2><p>横向滑动查看。公开页面不会公开本机管理入口。</p></div><div class="muted">最新分析：2026-06-26 11:13:43 · 间隔 15 分钟</div></div>
       <div class="chips"><span class="chip"><span>600519.SH</span></span><span class="chip"><span>000001.SZ</span></span><span class="chip"><span>300750.SZ</span></span><span class="chip"><span>000960.SZ</span></span><span class="chip"><span>688041.SH</span></span><span class="chip"><span>000510.SZ</span></span><span class="chip"><span>688981.SH</span></span><span class="chip"><span>301269.SZ</span></span></div>
     </section>
 
-    <section class="scanboard hold"><div class="scan-main"><span>重点清单</span><h2>现在没有强买卖信号。</h2><p>黄色只是候选，没过关就先等。</p></div><div class="scan-lists"><div><b>可关注</b><ul><li><b>无</b><span>不进</span><span>等下一轮</span></li></ul></div><div><b>卖出候选</b><ul><li><b>无</b><span>不卖</span><span>继续看</span></li></ul></div><div><b>候选但先别买</b><ul><li><b>000001.SZ</b><span>卡住 财务复核有硬伤，系统先挡住，不进买入候选。</span><span>处理 先不动</span></li><li><b>000510.SZ</b><span>卡住 财务复核有硬伤，系统先挡住，不进买入候选。</span><span>处理 先不动</span></li><li><b>000960.SZ</b><span>卡住 财务复核有硬伤，系统先挡住，不进买入候选。</span><span>处理 先不动</span></li><li><b>300750.SZ</b><span>卡住 目标空间离当前价格太远，暂时不适合直接动。</span><span>处理 先不动</span></li></ul></div></div></section>
+    <section class="scanboard hold"><div class="scan-main"><span>重点清单</span><h2>没有强买点，已有仓先守止损。</h2><p>重点看卡片里的止损价，没破就别乱动。</p></div><div class="scan-lists"><div><b>可关注</b><ul><li><b>无</b><span>不进</span><span>等下一轮</span></li></ul></div><div><b>已有仓守止损</b><ul><li><b>000001.SZ</b><span>卡住 信心还不够，先放观察。</span><span>处理 先不动</span></li><li><b>000510.SZ</b><span>卡住 信心还不够，先放观察。</span><span>处理 先不动</span></li><li><b>000960.SZ</b><span>卡住 信心还不够，先放观察。</span><span>处理 先不动</span></li></ul></div><div><b>候选但先别买</b><ul><li><b>无</b><span>暂无买入候选</span><span>--</span></li></ul></div></div></section>
 
     <h2>股票观察卡</h2>
-    <div class="quickgrid"><article class="tradecard blocked" data-symbol="000001.SZ" data-stock-name="平安银行"><div class="cardtop"><div class="stockid"><strong>平安银行</strong><span>000001.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="quotegrid"><div><span>最新价</span><b>10.33</b></div><div><span>价格变化</span><b class="move down">-0.18 / -1.71%</b></div><div><span>更新时间</span><b>2026-06-26 09:57:51</b></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="keygrid"><div><span>目标价</span><b>10.64</b></div><div><span>止损价</span><b>10.12</b></div><div><span>信心</span><b>0.66</b></div><div><span>过关</span><b class="risk bad">没过</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.2 13.9,5.1 22.9,5.0 31.8,5.0 40.8,5.0 49.7,5.0 58.7,5.1 67.6,5.2 76.6,5.3 85.5,5.5 94.5,5.5 103.4,5.5 112.4,5.5 121.3,5.5 130.3,5.5 139.2,49.0 148.2,5.5 157.1,5.7 166.1,5.9 175.0,5.9" /></svg><div><span>价格曲线</span><b>10.51 → 10.33</b></div></div><div class="reason-preview"><span>卡在哪里</span><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li></ul><p class="more-hint">还有 1 条，展开详情看。</p></div><div class="points"><div><span>进</span><b>不进</b></div><div><span>出</span><b>已有仓：跌破 10.12 走人</b></div></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：2022.10亿</p><ul><li>财务复核：平安银行 000001.SZ，baostock，14小时前更新</li><li>最新季度数据 26Q1：营收同比 4.65%，扣非同比 3.17%，毛利率 --，净利率 41.17%，ROE 2.65%</li><li>估值：PE-TTM 4.70，PB 0.44，PS-TTM 1.52，当前市值 2022.10亿，10PS结论 合理/低估</li><li>财务复核发现的问题：资产负债率偏高(90.98%)</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.78</li><li>Invalidation：止损/失效点 10.12；若跌破则假设失效</li><li>Asymmetry：目标价 10.64，估算收益风险比 1.48</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 2</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：平安银行 000001.SZ，baostock，14小时前更新</li><li>最新季度 26Q1：营收同比 4.65%，扣非同比 3.17%，毛利率 --，净利率 41.17%，ROE 2.65%</li><li>估值信息：PE-TTM 4.70，PB 0.44，PS-TTM 1.52，当前市值 2022.10亿，10PS结论 合理/低估</li><li>GP财务复核负面项：资产负债率偏高(90.98%)</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="000510.SZ" data-stock-name="新金路"><div class="cardtop"><div class="stockid"><strong>新金路</strong><span>000510.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="quotegrid"><div><span>最新价</span><b>25.06</b></div><div><span>价格变化</span><b class="move up">+0.53 / +2.16%</b></div><div><span>更新时间</span><b>2026-06-26 09:57:51</b></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="keygrid"><div><span>目标价</span><b>25.81</b></div><div><span>止损价</span><b>24.56</b></div><div><span>信心</span><b>0.66</b></div><div><span>过关</span><b class="risk bad">没过</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,8.0 13.9,7.0 22.9,6.5 31.8,6.2 40.8,7.1 49.7,6.8 58.7,6.3 67.6,6.0 76.6,5.0 85.5,5.1 94.5,5.2 103.4,5.5 112.4,5.6 121.3,5.5 130.3,5.6 139.2,49.0 148.2,5.7 157.1,7.1 166.1,6.9 175.0,7.2" /></svg><div><span>价格曲线</span><b>24.53 → 25.06</b></div></div><div class="reason-preview"><span>卡在哪里</span><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><div class="points"><div><span>进</span><b>不进</b></div><div><span>出</span><b>已有仓：跌破 24.56 走人</b></div></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：168.62亿</p><ul><li>财务复核：新金路 000510.SZ，baostock，14小时前更新</li><li>最新季度数据 26Q1：营收同比 3.27%，扣非同比 -38.04%，毛利率 4.49%，净利率 -12.88%，ROE -4.81%</li><li>估值：PE-TTM -68.97，PB 16.35，PS-TTM 10.09，当前市值 168.62亿，10PS结论 不适用</li><li>财务复核发现的问题：扣非同比为负(-38.04%)；经营现金流为负；净利率为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Small test only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.78</li><li>Invalidation：止损/失效点 24.56；若跌破则假设失效</li><li>Asymmetry：目标价 25.81，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 2</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：新金路 000510.SZ，baostock，14小时前更新</li><li>最新季度 26Q1：营收同比 3.27%，扣非同比 -38.04%，毛利率 4.49%，净利率 -12.88%，ROE -4.81%</li><li>估值信息：PE-TTM -68.97，PB 16.35，PS-TTM 10.09，当前市值 168.62亿，10PS结论 不适用</li><li>GP财务复核负面项：扣非同比为负(-38.04%)；经营现金流为负；净利率为负</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="000960.SZ" data-stock-name="锡业股份"><div class="cardtop"><div class="stockid"><strong>锡业股份</strong><span>000960.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="quotegrid"><div><span>最新价</span><b>45.44</b></div><div><span>价格变化</span><b class="move down">-1.16 / -2.49%</b></div><div><span>更新时间</span><b>2026-06-26 09:57:51</b></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="keygrid"><div><span>目标价</span><b>46.80</b></div><div><span>止损价</span><b>44.53</b></div><div><span>信心</span><b>0.66</b></div><div><span>过关</span><b class="risk bad">没过</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.0 13.9,6.3 22.9,6.1 31.8,5.9 40.8,7.1 49.7,7.0 58.7,6.8 67.6,6.8 76.6,6.9 85.5,6.6 94.5,6.6 103.4,7.1 112.4,7.2 121.3,7.0 130.3,7.1 139.2,49.0 148.2,6.9 157.1,7.3 166.1,6.0 175.0,6.1" /></svg><div><span>价格曲线</span><b>46.60 → 45.44</b></div></div><div class="reason-preview"><span>卡在哪里</span><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li></ul><p class="more-hint">还有 1 条，展开详情看。</p></div><div class="points"><div><span>进</span><b>不进</b></div><div><span>出</span><b>已有仓：跌破 44.53 走人</b></div></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：730.90亿</p><ul><li>财务复核：锡业股份 000960.SZ，baostock，14小时前更新</li><li>最新季度数据 26Q1：营收同比 59.86%，扣非同比 72.53%，毛利率 10.04%，净利率 5.70%，ROE 3.90%</li><li>估值：PE-TTM 31.31，PB 3.53，PS-TTM 1.48，当前市值 730.90亿，10PS结论 不适用</li><li>财务复核发现的问题：经营现金流为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>这笔的收益空间不够明显，风险回报不划算。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.78</li><li>Invalidation：止损/失效点 44.53；若跌破则假设失效</li><li>Asymmetry：目标价 46.80，估算收益风险比 1.49</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 2</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：锡业股份 000960.SZ，baostock，14小时前更新</li><li>最新季度 26Q1：营收同比 59.86%，扣非同比 72.53%，毛利率 10.04%，净利率 5.70%，ROE 3.90%</li><li>估值信息：PE-TTM 31.31，PB 3.53，PS-TTM 1.48，当前市值 730.90亿，10PS结论 不适用</li><li>GP财务复核负面项：经营现金流为负</li></ul></details></div></details></article><article class="tradecard no-buy" data-symbol="300750.SZ" data-stock-name="宁德时代"><div class="cardtop"><div class="stockid"><strong>宁德时代</strong><span>300750.SZ</span></div><div class="card-actions"><span class="pill no-buy">候选，先别买</span></div></div><div class="quotegrid"><div><span>最新价</span><b>397.03</b></div><div><span>价格变化</span><b class="move up">+1.67 / +0.42%</b></div><div><span>更新时间</span><b>2026-06-26 09:57:51</b></div></div><div class="headline">想买，但目标空间不合适，先等。</div><div class="keygrid"><div><span>目标价</span><b>408.94</b></div><div><span>止损价</span><b>389.09</b></div><div><span>信心</span><b>0.82</b></div><div><span>过关</span><b class="risk bad">没过</b></div></div><div class="sparkline no-buy"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.7 12.7,6.0 20.5,5.9 28.2,5.8 35.9,5.5 43.6,5.3 51.4,5.2 59.1,5.3 66.8,5.3 74.5,5.4 82.3,5.5 90.0,5.4 97.7,5.1 105.5,5.0 113.2,5.0 120.9,5.0 128.6,5.0 136.4,5.0 144.1,49.0 151.8,5.1 159.5,5.4 167.3,5.2 175.0,5.5" /></svg><div><span>价格曲线</span><b>395.36 → 397.03</b></div></div><div class="reason-preview"><span>卡在哪里</span><ul><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><div class="points"><div><span>进</span><b>不进</b></div><div><span>出</span><b>已有仓：跌破 389.09 走人</b></div></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：18593.87亿</p><ul><li>财务复核：宁德时代 300750.SZ，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 52.45%，扣非同比 52.95%，毛利率 24.82%，净利率 17.61%，ROE 5.97%</li><li>估值：PE-TTM 22.94，PB 5.07，PS-TTM 3.87，当前市值 18593.87亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Small test only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.78</li><li>Invalidation：止损/失效点 389.09；若跌破则假设失效</li><li>Asymmetry：目标价 408.94，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 2</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：宁德时代 300750.SZ，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 52.45%，扣非同比 52.95%，毛利率 24.82%，净利率 17.61%，ROE 5.97%</li><li>估值信息：PE-TTM 22.94，PB 5.07，PS-TTM 3.87，当前市值 18593.87亿，10PS结论 不适用</li><li>GP财务复核：未发现营收、扣非、现金流、净利率、负债率的硬性负面项</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="301269.SZ" data-stock-name="华大九天"><div class="cardtop"><div class="stockid"><strong>华大九天</strong><span>301269.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="quotegrid"><div><span>最新价</span><b>106.59</b></div><div><span>价格变化</span><b class="move down">-1.26 / -1.17%</b></div><div><span>更新时间</span><b>2026-06-26 09:57:51</b></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="keygrid"><div><span>目标价</span><b>109.79</b></div><div><span>止损价</span><b>104.46</b></div><div><span>信心</span><b>0.66</b></div><div><span>过关</span><b class="risk bad">没过</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.9 12.7,6.9 20.5,7.1 28.2,7.0 35.9,7.2 43.6,6.8 51.4,6.7 59.1,6.8 66.8,5.5 74.5,5.8 82.3,5.6 90.0,5.8 97.7,5.2 105.5,5.0 113.2,5.0 120.9,5.0 128.6,5.0 136.4,5.0 144.1,49.0 151.8,5.0 159.5,5.5 167.3,5.8 175.0,6.4" /></svg><div><span>价格曲线</span><b>107.85 → 106.59</b></div></div><div class="reason-preview"><span>卡在哪里</span><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><div class="points"><div><span>进</span><b>不进</b></div><div><span>出</span><b>已有仓：跌破 104.46 走人</b></div></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：600.53亿</p><ul><li>财务复核：华大九天 301269.SZ，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 9.65%，扣非同比 -21461.29%，毛利率 78.80%，净利率 -28.44%，ROE -1.40%</li><li>估值：PE-TTM -2609.95，PB 10.90，PS-TTM 42.09，当前市值 600.53亿，10PS结论 不适用</li><li>财务复核发现的问题：扣非同比为负(-21461.29%)；经营现金流为负；净利率为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>财务复核有硬伤，系统先挡住，不进买入候选。</li><li>信心还不够，先放观察。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Small test only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.78</li><li>Invalidation：止损/失效点 104.46；若跌破则假设失效</li><li>Asymmetry：目标价 109.79，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 2</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：华大九天 301269.SZ，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 9.65%，扣非同比 -21461.29%，毛利率 78.80%，净利率 -28.44%，ROE -1.40%</li><li>估值信息：PE-TTM -2609.95，PB 10.90，PS-TTM 42.09，当前市值 600.53亿，10PS结论 不适用</li><li>GP财务复核负面项：扣非同比为负(-21461.29%)；经营现金流为负；净利率为负</li></ul></details></div></details></article><article class="tradecard no-buy" data-symbol="600519.SH" data-stock-name="XD贵州茅"><div class="cardtop"><div class="stockid"><strong>XD贵州茅</strong><span>600519.SH</span></div><div class="card-actions"><span class="pill no-buy">候选，先别买</span></div></div><div class="quotegrid"><div><span>最新价</span><b>1187.97</b></div><div><span>价格变化</span><b class="move down">-19.71 / -1.63%</b></div><div><span>更新时间</span><b>2026-06-26 09:57:50</b></div></div><div class="headline">想买，但目标空间不合适，先等。</div><div class="keygrid"><div><span>目标价</span><b>1223.61</b></div><div><span>止损价</span><b>1164.21</b></div><div><span>信心</span><b>0.82</b></div><div><span>过关</span><b class="risk bad">没过</b></div></div><div class="sparkline no-buy"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.6 13.9,5.6 22.9,5.4 31.8,5.3 40.8,5.0 49.7,5.2 58.7,5.4 67.6,5.4 76.6,5.4 85.5,5.5 94.5,5.6 103.4,5.6 112.4,5.6 121.3,5.4 130.3,5.4 139.2,49.0 148.2,5.9 157.1,6.3 166.1,6.3 175.0,6.3" /></svg><div><span>价格曲线</span><b>1207.68 → 1187.97</b></div></div><div class="reason-preview"><span>卡在哪里</span><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><div class="points"><div><span>进</span><b>不进</b></div><div><span>出</span><b>已有仓：跌破 1164.21 走人</b></div></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：15178.77亿</p><ul><li>财务复核：贵州茅台 600519.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 6.34%，扣非同比 1.45%，毛利率 89.76%，净利率 51.47%，ROE 10.57%</li><li>估值：PE-TTM 18.36，PB 5.61，PS-TTM 8.66，当前市值 15178.77亿，10PS结论 合理/低估</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.78</li><li>Invalidation：止损/失效点 1164.21；若跌破则假设失效</li><li>Asymmetry：目标价 1223.61，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 2</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：贵州茅台 600519.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 6.34%，扣非同比 1.45%，毛利率 89.76%，净利率 51.47%，ROE 10.57%</li><li>估值信息：PE-TTM 18.36，PB 5.61，PS-TTM 8.66，当前市值 15178.77亿，10PS结论 合理/低估</li><li>GP财务复核：未发现营收、扣非、现金流、净利率、负债率的硬性负面项</li></ul></details></div></details></article><article class="tradecard expensive" data-symbol="688041.SH" data-stock-name="海光信息"><div class="cardtop"><div class="stockid"><strong>海光信息</strong><span>688041.SH</span></div><div class="card-actions"><span class="pill expensive">估值偏贵</span></div></div><div class="quotegrid"><div><span>最新价</span><b>349.39</b></div><div><span>价格变化</span><b class="move up">+12.29 / +3.65%</b></div><div><span>更新时间</span><b>2026-06-26 09:57:53</b></div></div><div class="headline">估值偏贵，先等更舒服的位置。</div><div class="keygrid"><div><span>目标价</span><b>359.87</b></div><div><span>止损价</span><b>342.40</b></div><div><span>信心</span><b>0.82</b></div><div><span>过关</span><b class="risk bad">没过</b></div></div><div class="sparkline expensive"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,8.6 13.1,7.2 21.2,7.2 29.3,7.2 37.4,7.5 45.5,5.7 53.6,5.0 61.7,5.2 69.8,5.5 77.9,5.7 86.0,5.5 94.0,6.1 102.1,6.1 110.2,5.8 118.3,5.8 126.4,5.8 134.5,5.8 142.6,49.0 150.7,6.4 158.8,6.7 166.9,6.5 175.0,7.1" /></svg><div><span>价格曲线</span><b>337.10 → 349.39</b></div></div><div class="reason-preview"><span>卡在哪里</span><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><div class="points"><div><span>进</span><b>不进</b></div><div><span>出</span><b>已有仓：跌破 342.40 走人</b></div></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：8374.13亿</p><ul><li>财务复核：海光信息 688041.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 68.06%，扣非同比 34.99%，毛利率 55.60%，净利率 21.75%，ROE 2.99%</li><li>估值：PE-TTM 279.66，PB 32.45，PS-TTM 47.62，当前市值 8374.13亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>这笔的收益空间不够明显，风险回报不划算。</li><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.78</li><li>Invalidation：止损/失效点 342.40；若跌破则假设失效</li><li>Asymmetry：目标价 359.87，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 2</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：海光信息 688041.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 68.06%，扣非同比 34.99%，毛利率 55.60%，净利率 21.75%，ROE 2.99%</li><li>估值信息：PE-TTM 279.66，PB 32.45，PS-TTM 47.62，当前市值 8374.13亿，10PS结论 不适用</li><li>GP财务复核：未发现营收、扣非、现金流、净利率、负债率的硬性负面项</li></ul></details></div></details></article><article class="tradecard expensive" data-symbol="688981.SH" data-stock-name="中芯国际"><div class="cardtop"><div class="stockid"><strong>中芯国际</strong><span>688981.SH</span></div><div class="card-actions"><span class="pill expensive">估值偏贵</span></div></div><div class="quotegrid"><div><span>最新价</span><b>152.06</b></div><div><span>价格变化</span><b class="move up">+0.53 / +0.35%</b></div><div><span>更新时间</span><b>2026-06-26 09:57:52</b></div></div><div class="headline">估值偏贵，先等更舒服的位置。</div><div class="keygrid"><div><span>目标价</span><b>156.62</b></div><div><span>止损价</span><b>149.02</b></div><div><span>信心</span><b>0.82</b></div><div><span>过关</span><b class="risk bad">没过</b></div></div><div class="sparkline expensive"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,6.8 13.1,6.0 21.2,5.9 29.3,5.8 37.4,5.9 45.5,5.1 53.6,5.0 61.7,5.0 69.8,5.5 77.9,5.3 86.0,5.2 94.0,5.8 102.1,5.6 110.2,5.4 118.3,5.4 126.4,5.4 134.5,5.4 142.6,49.0 150.7,6.2 158.8,5.9 166.9,5.7 175.0,6.7" /></svg><div><span>价格曲线</span><b>151.53 → 152.06</b></div></div><div class="reason-preview"><span>卡在哪里</span><ul><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></div><div class="points"><div><span>进</span><b>不进</b></div><div><span>出</span><b>已有仓：跌破 149.02 走人</b></div></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：12569.46亿</p><ul><li>财务复核：中芯国际 688981.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 8.07%，扣非同比 5.32%，毛利率 21.48%，净利率 9.05%，ROE 0.91%</li><li>估值：PE-TTM 223.46，PB 7.53，PS-TTM 16.43，当前市值 12569.46亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>目标空间离当前价格太远，暂时不适合直接动。</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线高于长均线</li><li>RSI 未明显过热</li><li>交易大师框架：Small test only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.78</li><li>Invalidation：止损/失效点 149.02；若跌破则假设失效</li><li>Asymmetry：目标价 156.62，估算收益风险比 1.50</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 2</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：中芯国际 688981.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 8.07%，扣非同比 5.32%，毛利率 21.48%，净利率 9.05%，ROE 0.91%</li><li>估值信息：PE-TTM 223.46，PB 7.53，PS-TTM 16.43，当前市值 12569.46亿，10PS结论 不适用</li><li>GP财务复核：未发现营收、扣非、现金流、净利率、负债率的硬性负面项</li></ul></details></div></details></article></div>
+    <div class="quickgrid"><article class="tradecard blocked" data-symbol="000001.SZ" data-stock-name="平安银行"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>平安银行</strong><span>000001.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>10.30</strong><em class="move down">-0.21 / -2.00%</em><small>06-26 11:13</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.60</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.2 12.1,5.1 19.2,5.0 26.2,5.0 33.3,5.0 40.4,5.0 47.5,5.1 54.6,5.2 61.7,5.3 68.8,5.5 75.8,5.5 82.9,5.5 90.0,5.5 97.1,5.5 104.2,5.5 111.2,49.0 118.3,5.5 125.4,5.7 132.5,5.9 139.6,5.9 146.7,6.2 153.8,6.3 160.8,6.3 167.9,6.4 175.0,6.0" /></svg><div><span>价格曲线</span><b>10.51 → 10.30</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="000001.SZ" data-current-price="10.30" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>000001.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>000001.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：2022.10亿</p><ul><li>财务复核：平安银行 000001.SZ，baostock，15小时前更新</li><li>最新季度数据 26Q1：营收同比 4.65%，扣非同比 3.17%，毛利率 --，净利率 41.17%，ROE 2.65%</li><li>估值：PE-TTM 4.70，PB 0.44，PS-TTM 1.52，当前市值 2022.10亿，10PS结论 合理/低估</li><li>财务复核发现的问题：资产负债率偏高(90.98%)</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>000001.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：平安银行 000001.SZ，baostock，15小时前更新</li><li>最新季度 26Q1：营收同比 4.65%，扣非同比 3.17%，毛利率 --，净利率 41.17%，ROE 2.65%</li><li>估值信息：PE-TTM 4.70，PB 0.44，PS-TTM 1.52，当前市值 2022.10亿，10PS结论 合理/低估</li><li>GP财务复核负面项：资产负债率偏高(90.98%)</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="000510.SZ" data-stock-name="新金路"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>新金路</strong><span>000510.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>24.43</strong><em class="move down">-0.10 / -0.41%</em><small>06-26 11:13</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.61</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,8.0 12.1,7.0 19.2,6.5 26.2,6.2 33.3,7.1 40.4,6.8 47.5,6.3 54.6,6.0 61.7,5.0 68.8,5.1 75.8,5.2 82.9,5.5 90.0,5.6 97.1,5.5 104.2,5.6 111.2,49.0 118.3,5.7 125.4,7.1 132.5,6.9 139.6,7.2 146.7,7.4 153.8,7.1 160.8,7.3 167.9,8.4 175.0,8.2" /></svg><div><span>价格曲线</span><b>24.53 → 24.43</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="000510.SZ" data-current-price="24.43" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>000510.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>000510.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：168.62亿</p><ul><li>财务复核：新金路 000510.SZ，baostock，15小时前更新</li><li>最新季度数据 26Q1：营收同比 3.27%，扣非同比 -38.04%，毛利率 4.49%，净利率 -12.88%，ROE -4.81%</li><li>估值：PE-TTM -68.97，PB 16.35，PS-TTM 10.09，当前市值 168.62亿，10PS结论 不适用</li><li>财务复核发现的问题：扣非同比为负(-38.04%)；经营现金流为负；净利率为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>000510.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.61</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：新金路 000510.SZ，baostock，15小时前更新</li><li>最新季度 26Q1：营收同比 3.27%，扣非同比 -38.04%，毛利率 4.49%，净利率 -12.88%，ROE -4.81%</li><li>估值信息：PE-TTM -68.97，PB 16.35，PS-TTM 10.09，当前市值 168.62亿，10PS结论 不适用</li><li>GP财务复核负面项：扣非同比为负(-38.04%)；经营现金流为负；净利率为负</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="000960.SZ" data-stock-name="锡业股份"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>锡业股份</strong><span>000960.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>43.12</strong><em class="move down">-3.48 / -7.47%</em><small>06-26 11:13</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.61</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.0 12.1,6.3 19.2,6.1 26.2,5.9 33.3,7.1 40.4,7.0 47.5,6.8 54.6,6.8 61.7,6.9 68.8,6.6 75.8,6.6 82.9,7.1 90.0,7.2 97.1,7.0 104.2,7.1 111.2,49.0 118.3,6.9 125.4,7.3 132.5,6.0 139.6,6.1 146.7,7.2 153.8,7.5 160.8,7.7 167.9,8.5 175.0,8.3" /></svg><div><span>价格曲线</span><b>46.60 → 43.12</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="000960.SZ" data-current-price="43.12" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>000960.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>000960.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：730.90亿</p><ul><li>财务复核：锡业股份 000960.SZ，baostock，15小时前更新</li><li>最新季度数据 26Q1：营收同比 59.86%，扣非同比 72.53%，毛利率 10.04%，净利率 5.70%，ROE 3.90%</li><li>估值：PE-TTM 31.31，PB 3.53，PS-TTM 1.48，当前市值 730.90亿，10PS结论 不适用</li><li>财务复核发现的问题：经营现金流为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>000960.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.61</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：锡业股份 000960.SZ，baostock，15小时前更新</li><li>最新季度 26Q1：营收同比 59.86%，扣非同比 72.53%，毛利率 10.04%，净利率 5.70%，ROE 3.90%</li><li>估值信息：PE-TTM 31.31，PB 3.53，PS-TTM 1.48，当前市值 730.90亿，10PS结论 不适用</li><li>GP财务复核负面项：经营现金流为负</li></ul></details></div></details></article><article class="tradecard no-sell" data-symbol="300750.SZ" data-stock-name="宁德时代"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>宁德时代</strong><span>300750.SZ</span></div><div class="card-actions"><span class="pill no-sell">已有仓，守止损</span></div></div><div class="price-focus"><span>当前价</span><strong>387.15</strong><em class="move down">-8.21 / -2.08%</em><small>06-26 11:13</small></div></div><div class="headline">想卖，但条件还没过关，先观察。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.60</b></div></div><div class="sparkline no-sell"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.7 11.3,6.0 17.6,5.9 23.9,5.8 30.2,5.5 36.5,5.3 42.8,5.2 49.1,5.3 55.4,5.3 61.7,5.4 68.0,5.5 74.3,5.4 80.6,5.1 86.9,5.0 93.1,5.0 99.4,5.0 105.7,5.0 112.0,5.0 118.3,49.0 124.6,5.1 130.9,5.4 137.2,5.2 143.5,5.5 149.8,6.1 156.1,6.5 162.4,6.7 168.7,6.7 175.0,6.6" /></svg><div><span>价格曲线</span><b>395.36 → 387.15</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="300750.SZ" data-current-price="387.15" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>300750.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>300750.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：18593.87亿</p><ul><li>财务复核：宁德时代 300750.SZ，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 52.45%，扣非同比 52.95%，毛利率 24.82%，净利率 17.61%，ROE 5.97%</li><li>估值：PE-TTM 22.94，PB 5.07，PS-TTM 3.87，当前市值 18593.87亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>300750.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：宁德时代 300750.SZ，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 52.45%，扣非同比 52.95%，毛利率 24.82%，净利率 17.61%，ROE 5.97%</li><li>估值信息：PE-TTM 22.94，PB 5.07，PS-TTM 3.87，当前市值 18593.87亿，10PS结论 不适用</li></ul></details></div></details></article><article class="tradecard blocked" data-symbol="301269.SZ" data-stock-name="华大九天"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>华大九天</strong><span>301269.SZ</span></div><div class="card-actions"><span class="pill blocked">财务有硬伤</span></div></div><div class="price-focus"><span>当前价</span><strong>104.84</strong><em class="move down">-3.01 / -2.79%</em><small>06-26 11:13</small></div></div><div class="headline">财务复核有硬伤，系统先挡住。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.61</b></div></div><div class="sparkline blocked"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.9 11.3,6.9 17.6,7.1 23.9,7.0 30.2,7.2 36.5,6.8 42.8,6.7 49.1,6.8 55.4,5.5 61.7,5.8 68.0,5.6 74.3,5.8 80.6,5.2 86.9,5.0 93.1,5.0 99.4,5.0 105.7,5.0 112.0,5.0 118.3,49.0 124.6,5.0 130.9,5.5 137.2,5.8 143.5,6.4 149.8,6.2 156.1,6.8 162.4,6.8 168.7,7.5 175.0,7.1" /></svg><div><span>价格曲线</span><b>107.85 → 104.84</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="301269.SZ" data-current-price="104.84" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>301269.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>301269.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：600.53亿</p><ul><li>财务复核：华大九天 301269.SZ，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 9.65%，扣非同比 -21461.29%，毛利率 78.80%，净利率 -28.44%，ROE -1.40%</li><li>估值：PE-TTM -2609.95，PB 10.90，PS-TTM 42.09，当前市值 600.53亿，10PS结论 不适用</li><li>财务复核发现的问题：扣非同比为负(-21461.29%)；经营现金流为负；净利率为负</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>301269.SZ 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.61</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：华大九天 301269.SZ，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 9.65%，扣非同比 -21461.29%，毛利率 78.80%，净利率 -28.44%，ROE -1.40%</li><li>估值信息：PE-TTM -2609.95，PB 10.90，PS-TTM 42.09，当前市值 600.53亿，10PS结论 不适用</li><li>GP财务复核负面项：扣非同比为负(-21461.29%)；经营现金流为负；净利率为负</li></ul></details></div></details></article><article class="tradecard no-sell" data-symbol="600519.SH" data-stock-name="XD贵州茅"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>XD贵州茅</strong><span>600519.SH</span></div><div class="card-actions"><span class="pill no-sell">已有仓，守止损</span></div></div><div class="price-focus"><span>当前价</span><strong>1186.00</strong><em class="move down">-21.68 / -1.80%</em><small>06-26 11:13</small></div></div><div class="headline">想卖，但条件还没过关，先观察。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.60</b></div></div><div class="sparkline no-sell"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,5.6 12.1,5.6 19.2,5.4 26.2,5.3 33.3,5.0 40.4,5.2 47.5,5.4 54.6,5.4 61.7,5.4 68.8,5.5 75.8,5.6 82.9,5.6 90.0,5.6 97.1,5.4 104.2,5.4 111.2,49.0 118.3,5.9 125.4,6.3 132.5,6.3 139.6,6.3 146.7,6.3 153.8,6.5 160.8,6.6 167.9,6.7 175.0,6.3" /></svg><div><span>价格曲线</span><b>1207.68 → 1186.00</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="600519.SH" data-current-price="1186.00" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>600519.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>600519.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：15178.77亿</p><ul><li>财务复核：贵州茅台 600519.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 6.34%，扣非同比 1.45%，毛利率 89.76%，净利率 51.47%，ROE 10.57%</li><li>估值：PE-TTM 18.36，PB 5.61，PS-TTM 8.66，当前市值 15178.77亿，10PS结论 合理/低估</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>600519.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.60</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：贵州茅台 600519.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 6.34%，扣非同比 1.45%，毛利率 89.76%，净利率 51.47%，ROE 10.57%</li><li>估值信息：PE-TTM 18.36，PB 5.61，PS-TTM 8.66，当前市值 15178.77亿，10PS结论 合理/低估</li></ul></details></div></details></article><article class="tradecard expensive" data-symbol="688041.SH" data-stock-name="海光信息"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>海光信息</strong><span>688041.SH</span></div><div class="card-actions"><span class="pill expensive">估值偏贵</span></div></div><div class="price-focus"><span>当前价</span><strong>340.42</strong><em class="move up">+3.32 / +0.98%</em><small>06-26 11:13</small></div></div><div class="headline">估值偏贵，先等更舒服的位置。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.61</b></div></div><div class="sparkline expensive"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,8.6 11.5,7.2 18.1,7.2 24.6,7.2 31.2,7.5 37.7,5.7 44.2,5.0 50.8,5.2 57.3,5.5 63.8,5.7 70.4,5.5 76.9,6.1 83.5,6.1 90.0,5.8 96.5,5.8 103.1,5.8 109.6,5.8 116.2,49.0 122.7,6.4 129.2,6.7 135.8,6.5 142.3,7.1 148.8,7.3 155.4,7.7 161.9,7.9 168.5,8.4 175.0,8.2" /></svg><div><span>价格曲线</span><b>337.10 → 340.42</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="688041.SH" data-current-price="340.42" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>688041.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>688041.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：8374.13亿</p><ul><li>财务复核：海光信息 688041.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 68.06%，扣非同比 34.99%，毛利率 55.60%，净利率 21.75%，ROE 2.99%</li><li>估值：PE-TTM 279.66，PB 32.45，PS-TTM 47.62，当前市值 8374.13亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>688041.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.61</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：海光信息 688041.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 68.06%，扣非同比 34.99%，毛利率 55.60%，净利率 21.75%，ROE 2.99%</li><li>估值信息：PE-TTM 279.66，PB 32.45，PS-TTM 47.62，当前市值 8374.13亿，10PS结论 不适用</li></ul></details></div></details></article><article class="tradecard expensive" data-symbol="688981.SH" data-stock-name="中芯国际"><div class="stock-card-hero"><div class="cardtop"><div class="stockid"><strong>中芯国际</strong><span>688981.SH</span></div><div class="card-actions"><span class="pill expensive">估值偏贵</span></div></div><div class="price-focus"><span>当前价</span><strong>147.32</strong><em class="move down">-4.21 / -2.78%</em><small>06-26 11:13</small></div></div><div class="headline">估值偏贵，先等更舒服的位置。</div><div class="stock-card-body"><section class="strategy-panel"><div class="mini-title"><span>A</span><b>策略参考</b></div><div class="keygrid"><div><span>计划价</span><b>--</b></div><div><span>止损线</span><b>--</b></div><div><span>风控</span><b class="risk bad">没过</b></div><div><span>信心</span><b>0.61</b></div></div><div class="sparkline expensive"><svg viewBox="0 0 180 54" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="49" x2="175" y2="49" /><polyline points="5.0,6.8 11.5,6.0 18.1,5.9 24.6,5.8 31.2,5.9 37.7,5.1 44.2,5.0 50.8,5.0 57.3,5.5 63.8,5.3 70.4,5.2 76.9,5.8 83.5,5.6 90.0,5.4 96.5,5.4 103.1,5.4 109.6,5.4 116.2,49.0 122.7,6.2 129.2,5.9 135.8,5.7 142.3,6.7 148.8,6.8 155.4,7.2 161.9,7.3 168.5,8.0 175.0,8.0" /></svg><div><span>价格曲线</span><b>151.53 → 147.32</b></div></div></section><section class="position-panel"><div class="mini-title"><span>B</span><b>我的持仓</b></div><section class="positionbox" data-position-symbol="688981.SH" data-current-price="147.32" data-default-planned-exit="--" data-default-stop-loss="--"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section></section></div><div class="reason-preview"><span>卡在哪里</span><ul><li>信心还不够，先放观察。</li><li>688981.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></div><details class="card-details"><summary>展开详情</summary><div class="detail-sections"><details class="detail-section" open><summary>为什么这么判断</summary><ul><li>信心还不够，先放观察。</li><li>688981.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>财务/估值复核</summary><p>当前市值：12569.46亿</p><ul><li>财务复核：中芯国际 688981.SH，baostock，5天前更新</li><li>最新季度数据 26Q1：营收同比 8.07%，扣非同比 5.32%，毛利率 21.48%，净利率 9.05%，ROE 0.91%</li><li>估值：PE-TTM 223.46，PB 7.53，PS-TTM 16.43，当前市值 12569.46亿，10PS结论 不适用</li><li>--</li></ul></details><details class="detail-section"><summary>哪里被挡住</summary><ul><li>信心还不够，先放观察。</li><li>688981.SH 当前无持仓，禁止生成 卖出 执行候选</li></ul></details><details class="detail-section"><summary>开发/复盘记录</summary><ul><li>fallback_rules 演示模式：未连接本地女娲模型</li><li>短均线低于长均线</li><li>动能偏弱</li><li>交易大师框架：Watchlist only，先保生存，再看边际安全和不对称收益</li><li>Edge evidence：趋势/动量信号来自价格结构，当前置信度 0.61</li><li>Invalidation：止损/失效点 --；若跌破则假设失效</li><li>Asymmetry：目标价 --，估算收益风险比 0.00</li><li>Position sizing：单笔金额必须受 max_order_value、单票仓位和每日限额约束</li><li>Market context：neutral，风险分数 0</li><li>Review trigger：每轮监控重新检查价格、财务复核、新闻局势和风控阻断原因</li><li>GP财务复核：中芯国际 688981.SH，baostock，5天前更新</li><li>最新季度 26Q1：营收同比 8.07%，扣非同比 5.32%，毛利率 21.48%，净利率 9.05%，ROE 0.91%</li><li>估值信息：PE-TTM 223.46，PB 7.53，PS-TTM 16.43，当前市值 12569.46亿，10PS结论 不适用</li></ul></details></div></details></article></div>
 
     <div class="grid2">
       <section class="panel">
         <h2>局势</h2>
-        <div class="muted">风险标记：加息, 通胀</div>
-        <details><summary>详细新闻</summary><ul class="news"><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3ddca3473649c39850edfd775975be&amp;url=https%3a%2f%2ffinance.sina.com.cn%2fmoney%2ffund%2fjjgsgd%2f2026-06-25%2fdoc-inierpqu2460528.shtml&amp;c=9705480760425005437&amp;mkt=en-us" target="_blank" rel="noreferrer">宏利观市｜地缘缓和、美联储鹰派，如何影响全球大类资产？</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 25 Jun 2026 03:52:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3ddca3473649c39850edfd775975be&amp;url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20260625A00ZCN00&amp;c=1479954303793569554&amp;mkt=en-us" target="_blank" rel="noreferrer">WTI原油失守70美元：地缘溢价彻底清零，通胀与加息预期形成“双杀”</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Wed, 24 Jun 2026 13:10:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3ddca3473649c39850edfd775975be&amp;url=https%3a%2f%2fnews.fx678.com%2f202601132030582284.shtml&amp;c=5288883211875443403&amp;mkt=en-us" target="_blank" rel="noreferrer">全球市场聚焦：黄金历史新高后回落，原油突发地缘溢价，今晚数据将如何引爆行情？</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Tue, 13 Jan 2026 12:31:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3ddca3473649c39850edfd775975be&amp;url=https%3a%2f%2ffinance.sina.com.cn%2fmoney%2ffund%2fjjgsgd%2f2026-06-11%2fdoc-inicaraf0474483.shtml&amp;c=10399406349384990653&amp;mkt=en-us" target="_blank" rel="noreferrer">宏利观市｜非农数据扰动美联储政策预期，全球股市大幅波动</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 11 Jun 2026 04:38:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3ddca3473649c39850edfd775975be&amp;url=https%3a%2f%2fwww.fx678.com%2fC%2f20260424%2f202604241934559090.html&amp;c=15723576679149662676&amp;mkt=en-us" target="_blank" rel="noreferrer">超级周来袭：央行密集议息与数据扎堆下的全球市场前瞻</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Fri, 24 Apr 2026 12:34:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3ddca3473649c39850edfd775975be&amp;url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20260609A03S7L00&amp;c=4382301047532044604&amp;mkt=en-us" target="_blank" rel="noreferrer">中东战火重燃引爆市场震荡！全球股市普跌，油价金价双双暴涨</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Tue, 09 Jun 2026 08:00:00 GMT</span></li></ul></details>
+        <div class="muted">风险标记：利好, 加息, 反弹, 通胀</div>
+        <details><summary>详细新闻</summary><ul class="news"><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dee6544c14400bb32b45d45fa3a34&amp;url=https%3a%2f%2ffinance.sina.com.cn%2fmoney%2ffund%2fjjgsgd%2f2026-06-25%2fdoc-inierpqu2460528.shtml&amp;c=9705480760425005437&amp;mkt=en-us" target="_blank" rel="noreferrer">宏利观市｜地缘缓和、美联储鹰派，如何影响全球大类资产？</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 25 Jun 2026 03:52:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dee6544c14400bb32b45d45fa3a34&amp;url=https%3a%2f%2fnews.fx678.com%2f202601132030582284.shtml&amp;c=5288883211875443403&amp;mkt=en-us" target="_blank" rel="noreferrer">全球市场聚焦：黄金历史新高后回落，原油突发地缘溢价，今晚数据将如何引爆行情？</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Tue, 13 Jan 2026 12:31:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dee6544c14400bb32b45d45fa3a34&amp;url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20260615A083I200&amp;c=7727999294261873057&amp;mkt=en-us" target="_blank" rel="noreferrer">重磅利好落地！美伊初步协议敲定，全球市场迎来全面反弹行情</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Mon, 15 Jun 2026 03:50:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dee6544c14400bb32b45d45fa3a34&amp;url=https%3a%2f%2fnews.qq.com%2frain%2fa%2f20260625A00ZCN00&amp;c=1479954303793569554&amp;mkt=en-us" target="_blank" rel="noreferrer">WTI原油失守70美元：地缘溢价彻底清零，通胀与加息预期形成“双杀”</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Wed, 24 Jun 2026 13:10:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dee6544c14400bb32b45d45fa3a34&amp;url=https%3a%2f%2ffinance.sina.com.cn%2fmoney%2ffund%2fjjgsgd%2f2026-06-11%2fdoc-inicaraf0474483.shtml&amp;c=10399406349384990653&amp;mkt=en-us" target="_blank" rel="noreferrer">宏利观市｜非农数据扰动美联储政策预期，全球股市大幅波动</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 11 Jun 2026 04:38:00 GMT</span></li><li><a href="http://www.bing.com/news/apiclick.aspx?ref=FexRss&amp;aid=&amp;tid=6a3dee6544c14400bb32b45d45fa3a34&amp;url=https%3a%2f%2fwww.chinanews.com%2fcj%2f2026%2f05-21%2f10625608.shtml&amp;c=11955204090442838390&amp;mkt=en-us" target="_blank" rel="noreferrer">全球利率震荡 LPR以静制动</a><span>全球 市场 股市 利率 汇率 原油 地缘 政策 · Thu, 21 May 2026 03:10:00 GMT</span></li></ul></details>
       </section>
       <section class="panel">
         <h2>一句话</h2>
@@ -227,25 +833,25 @@
     </div>
 
     <h2>开发/复盘记录</h2>
-    <details><summary>展开完整文本</summary><pre>TradeOS 投研监控
-更新时间: 2026-06-26 09:57:57 CST
+    <details><summary>展开复盘记录</summary><pre>股票观察复盘
+更新时间: 2026-06-26 11:13:43 CST
 流程: 交易大师框架 -&gt; 当前局势 -&gt; GP财务复核 -&gt; 风控验证。
-当前局势: neutral，风险分数 2
-安全边界: paper-only 辅助分析，不是投资建议，不会真实下单。
+当前局势: neutral，风险分数 0
+安全边界: 只读辅助观察，不是投资建议，不会执行真实交易。
 
 局势摘要:
 - 宏利观市｜地缘缓和、美联储鹰派，如何影响全球大类资产？
-- WTI原油失守70美元：地缘溢价彻底清零，通胀与加息预期形成“双杀”
 - 全球市场聚焦：黄金历史新高后回落，原油突发地缘溢价，今晚数据将如何引爆行情？
+- 重磅利好落地！美伊初步协议敲定，全球市场迎来全面反弹行情
 
-000001.SZ: 出现 BUY 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.66 | 止盈/目标价 10.64 | 止损 10.12 | 验证 阻断 | 原因 GP 财务复核存在硬性负面指标，禁止 BUY 候选；交易大师框架：收益风险比不足，缺少明显不对称；置信度 0.66 低于门槛 0.68；目标价偏离现价 3.00%，超过上限 0.50%
-000510.SZ: 出现 BUY 候选，但当前不适合直接买/卖 | 框架 Small test only | 置信度 0.66 | 止盈/目标价 25.81 | 止损 24.56 | 验证 阻断 | 原因 GP 财务复核存在硬性负面指标，禁止 BUY 候选；置信度 0.66 低于门槛 0.68；目标价偏离现价 2.99%，超过上限 0.50%
-000960.SZ: 出现 BUY 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.66 | 止盈/目标价 46.80 | 止损 44.53 | 验证 阻断 | 原因 GP 财务复核存在硬性负面指标，禁止 BUY 候选；交易大师框架：收益风险比不足，缺少明显不对称；置信度 0.66 低于门槛 0.68；目标价偏离现价 2.99%，超过上限 0.50%
-300750.SZ: 出现 BUY 候选，但当前不适合直接买/卖 | 框架 Small test only | 置信度 0.82 | 止盈/目标价 408.94 | 止损 389.09 | 验证 阻断 | 原因 目标价偏离现价 3.00%，超过上限 0.50%
-301269.SZ: 出现 BUY 候选，但当前不适合直接买/卖 | 框架 Small test only | 置信度 0.66 | 止盈/目标价 109.79 | 止损 104.46 | 验证 阻断 | 原因 GP 财务复核存在硬性负面指标，禁止 BUY 候选；置信度 0.66 低于门槛 0.68；目标价偏离现价 3.00%，超过上限 0.50%
-600519.SH: 出现 BUY 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.82 | 止盈/目标价 1223.61 | 止损 1164.21 | 验证 阻断 | 原因 交易大师框架：收益风险比不足，缺少明显不对称；目标价偏离现价 3.00%，超过上限 0.50%
-688041.SH: 出现 BUY 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.82 | 止盈/目标价 359.87 | 止损 342.40 | 验证 阻断 | 原因 交易大师框架：收益风险比不足，缺少明显不对称；目标价偏离现价 3.00%，超过上限 0.50%
-688981.SH: 出现 BUY 候选，但当前不适合直接买/卖 | 框架 Small test only | 置信度 0.82 | 止盈/目标价 156.62 | 止损 149.02 | 验证 阻断 | 原因 目标价偏离现价 3.00%，超过上限 0.50%
+000001.SZ: 出现 SELL 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.60 | 止盈/目标价 -- | 止损 -- | 验证 阻断 | 原因 置信度 0.60 低于门槛 0.68；000001.SZ 当前无持仓，禁止生成 SELL 执行候选
+000510.SZ: 出现 SELL 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.61 | 止盈/目标价 -- | 止损 -- | 验证 阻断 | 原因 置信度 0.61 低于门槛 0.68；000510.SZ 当前无持仓，禁止生成 SELL 执行候选
+000960.SZ: 出现 SELL 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.61 | 止盈/目标价 -- | 止损 -- | 验证 阻断 | 原因 置信度 0.61 低于门槛 0.68；000960.SZ 当前无持仓，禁止生成 SELL 执行候选
+300750.SZ: 出现 SELL 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.60 | 止盈/目标价 -- | 止损 -- | 验证 阻断 | 原因 置信度 0.60 低于门槛 0.68；300750.SZ 当前无持仓，禁止生成 SELL 执行候选
+301269.SZ: 出现 SELL 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.61 | 止盈/目标价 -- | 止损 -- | 验证 阻断 | 原因 置信度 0.61 低于门槛 0.68；301269.SZ 当前无持仓，禁止生成 SELL 执行候选
+600519.SH: 出现 SELL 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.60 | 止盈/目标价 -- | 止损 -- | 验证 阻断 | 原因 置信度 0.60 低于门槛 0.68；600519.SH 当前无持仓，禁止生成 SELL 执行候选
+688041.SH: 出现 SELL 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.61 | 止盈/目标价 -- | 止损 -- | 验证 阻断 | 原因 置信度 0.61 低于门槛 0.68；688041.SH 当前无持仓，禁止生成 SELL 执行候选
+688981.SH: 出现 SELL 候选，但当前不适合直接买/卖 | 框架 Watchlist only | 置信度 0.61 | 止盈/目标价 -- | 止损 -- | 验证 阻断 | 原因 置信度 0.61 低于门槛 0.68；688981.SH 当前无持仓，禁止生成 SELL 执行候选
 
 真实交易必须由你人工确认；程序不会点击最终买入/卖出确认。</pre></details>
   </main>
@@ -254,6 +860,7 @@
     (() => {
       const watchKey = "tradeosPublicWatchlistV1";
       const historyKey = "tradeosPublicQuoteHistoryV1";
+      const positionKey = "ma88Positions:v1";
       const form = document.getElementById("publicWatchForm");
       const input = document.getElementById("publicStockInput");
       const localPanel = document.getElementById("publicLocalPanel");
@@ -261,8 +868,18 @@
       const clearButton = document.getElementById("publicClearButton");
       const notifyButton = document.getElementById("publicNotifyButton");
       const liveStatus = document.getElementById("publicLiveStatus");
+      const positionWorkspace = document.getElementById("positionWorkspace");
+      const positionSearchInput = document.getElementById("positionSearchInput");
+      const positionMatchList = document.getElementById("positionMatchList");
+      const positionSelectedText = document.getElementById("positionSelectedText");
+      const positionSelectedMeta = document.getElementById("positionSelectedMeta");
+      const positionRecordForm = document.getElementById("positionRecordForm");
+      const positionClearButton = document.getElementById("positionClearButton");
+      const positionDeleteButton = document.getElementById("positionDeleteButton");
+      const positionWindowStatus = document.getElementById("positionWindowStatus");
       const firstUpdated = document.querySelector("[data-updated-at]")?.dataset.updatedAt || "";
       let lastUpdated = firstUpdated;
+      let selectedPositionSymbol = "";
 
       const htmlMap = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
       const escHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => htmlMap[ch]);
@@ -277,6 +894,428 @@
       const saveJson = (key, value) => localStorage.setItem(key, JSON.stringify(value));
       const loadWatchlist = () => Array.isArray(loadJson(watchKey, [])) ? loadJson(watchKey, []) : [];
       const saveWatchlist = (symbols) => saveJson(watchKey, [...new Set(symbols)].slice(0, 24));
+      const loadPositions = () => {
+        const value = loadJson(positionKey, {});
+        return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+      };
+      const savePositions = (positions) => saveJson(positionKey, positions);
+      const toNumber = (value) => {
+        const cleaned = String(value ?? "").replace(/[^\d.-]/g, "");
+        if (!cleaned) return null;
+        const num = Number(cleaned);
+        return Number.isFinite(num) ? num : null;
+      };
+      const moneyText = (value) => Number.isFinite(value) ? `¥${Math.abs(value).toFixed(2)}` : "填数量后计算";
+      const priceLabel = (value) => {
+        const num = toNumber(value);
+        return num === null ? "--" : `¥${num.toFixed(2)}`;
+      };
+      const signedMoneyText = (value) => {
+        if (!Number.isFinite(value)) return "填数量后计算";
+        if (value > 0) return `赚 ¥${value.toFixed(2)}`;
+        if (value < 0) return `亏 ¥${Math.abs(value).toFixed(2)}`;
+        return "持平 ¥0.00";
+      };
+      const perShareText = (value) => {
+        if (!Number.isFinite(value)) return "--";
+        if (value > 0) return `每股赚 ¥${value.toFixed(2)}`;
+        if (value < 0) return `每股亏 ¥${Math.abs(value).toFixed(2)}`;
+        return "每股持平 ¥0.00";
+      };
+      const distanceText = (label, current, target) => {
+        if (!Number.isFinite(current) || !Number.isFinite(target)) return "--";
+        const diff = target - current;
+        const pct = current ? (diff / current) * 100 : 0;
+        if (Math.abs(diff) < 0.005) return `${label}：已到附近`;
+        const word = diff > 0 ? "还差" : "已超过";
+        return `${label}：${word} ¥${Math.abs(diff).toFixed(2)} / ${Math.abs(pct).toFixed(2)}%`;
+      };
+      const targetDistanceText = (current, target) => {
+        if (!Number.isFinite(current) || !Number.isFinite(target)) return "--";
+        const diff = target - current;
+        return diff <= 0 ? "已达到" : `还差 ¥${diff.toFixed(2)}`;
+      };
+      const stopDistanceText = (current, stop) => {
+        if (!Number.isFinite(current) || !Number.isFinite(stop)) return "--";
+        const diff = current - stop;
+        return diff <= 0 ? "已跌破" : `还有 ¥${diff.toFixed(2)}`;
+      };
+      const percentText = (value) => {
+        if (!Number.isFinite(value)) return "--";
+        const sign = value > 0 ? "+" : "";
+        return `${sign}${value.toFixed(2)}%`;
+      };
+      const moneyClass = (value) => value > 0 ? "money-positive" : (value < 0 ? "money-negative" : "money-flat");
+
+      function positionShell(symbol, currentPrice = "", target = "", stop = "") {
+        return `<section class="positionbox" data-position-symbol="${escHtml(symbol)}" data-current-price="${escHtml(currentPrice)}" data-default-planned-exit="${escHtml(target)}" data-default-stop-loss="${escHtml(stop)}"><div class="position-loading">我的持仓：只保存在本浏览器。</div></section>`;
+      }
+
+      function calcPosition(section, position) {
+        const current = toNumber(section?.dataset.currentPrice);
+        const entry = toNumber(position?.entryPrice);
+        const quantity = toNumber(position?.quantity);
+        const plannedExit = toNumber(position?.plannedExitPrice);
+        const stopLoss = toNumber(position?.stopLossPrice);
+        const perShare = current !== null && entry !== null ? current - entry : null;
+        const pnl = perShare !== null && quantity !== null ? perShare * quantity : null;
+        const pnlPct = current !== null && entry ? (current / entry - 1) * 100 : null;
+        const plannedPnl = plannedExit !== null && entry !== null && quantity !== null ? (plannedExit - entry) * quantity : null;
+        const stopPnl = stopLoss !== null && entry !== null && quantity !== null ? (stopLoss - entry) * quantity : null;
+        const plannedPerShare = plannedExit !== null && entry !== null ? plannedExit - entry : null;
+        const stopPerShare = stopLoss !== null && entry !== null ? stopLoss - entry : null;
+        const reward = plannedExit !== null && entry !== null ? plannedExit - entry : null;
+        const risk = stopLoss !== null && entry !== null ? entry - stopLoss : null;
+        const rr = reward !== null && risk !== null && risk > 0 ? reward / risk : null;
+        return { current, entry, quantity, plannedExit, stopLoss, perShare, pnl, pnlPct, plannedPnl, stopPnl, plannedPerShare, stopPerShare, reward, risk, rr };
+      }
+
+      function positionStatus(calc) {
+        if (calc.current === null || calc.entry === null) return { label: "待补价格", cls: "flat", note: "补入场价后再看盈亏。" };
+        if (calc.stopLoss !== null && calc.current <= calc.stopLoss) {
+          return { label: "跌破止损", cls: "stop", note: "价格已跌破止损线，请人工确认。" };
+        }
+        if (calc.plannedExit !== null && calc.current >= calc.plannedExit) {
+          return { label: "已到目标", cls: "target", note: "已接近计划出场价，请人工确认。" };
+        }
+        if (calc.stopLoss !== null) {
+          const stopGap = (calc.current - calc.stopLoss) / Math.max(calc.entry, 0.01);
+          if (stopGap <= 0.02) return { label: "接近止损", cls: "stop", note: "价格接近止损线，请人工确认。" };
+        }
+        if (calc.plannedExit !== null) {
+          const targetGap = (calc.plannedExit - calc.current) / Math.max(calc.entry, 0.01);
+          if (targetGap >= 0 && targetGap <= 0.02) return { label: "接近目标", cls: "target", note: "已接近计划出场价，请人工确认。" };
+        }
+        if ((calc.perShare ?? 0) > 0) return { label: "赚钱中", cls: "positive", note: "如果现在手动退出，账面结果约为：" };
+        if ((calc.perShare ?? 0) < 0) return { label: "亏损中", cls: "negative", note: "如果现在手动退出，账面结果约为：" };
+        return { label: "持平观察", cls: "flat", note: "如果现在手动退出，账面结果约为：" };
+      }
+
+      function renderPositionEmpty(section) {
+        const symbol = section.dataset.positionSymbol || "";
+        section.className = "positionbox empty";
+        section.innerHTML = `
+          <p class="position-empty-copy">暂无本地持仓记录。可在顶部“马董持仓记录窗口”输入代码或名称进行记录。</p>
+        `;
+      }
+
+      function renderPositionRecorded(section, position) {
+        const symbol = section.dataset.positionSymbol || "";
+        const calc = calcPosition(section, position);
+        const status = positionStatus(calc);
+        const exitText = calc.pnl === null
+          ? `${perShareText(calc.perShare)}，填数量后计算总金额。`
+          : signedMoneyText(calc.pnl);
+        const plannedText = calc.plannedPnl === null
+          ? priceLabel(position.plannedExitPrice)
+          : priceLabel(position.plannedExitPrice);
+        const stopText = calc.stopPnl === null
+          ? priceLabel(position.stopLossPrice)
+          : priceLabel(position.stopLossPrice);
+        const targetDistance = targetDistanceText(calc.current, calc.plannedExit);
+        const stopDistance = stopDistanceText(calc.current, calc.stopLoss);
+        section.className = `positionbox ${status.cls}`;
+        section.innerHTML = `
+          <div class="position-head">
+            <div><span>我的持仓</span><strong class="${moneyClass(calc.pnl ?? calc.perShare ?? 0)}">${exitText}</strong><p>如果现在手动退出，账面结果约为以上金额。</p></div>
+            <span class="position-status ${status.cls}">${status.label}</span>
+          </div>
+          <div class="position-metrics">
+            <div><span>入场价</span><b>${priceLabel(position.entryPrice)}</b></div>
+            <div><span>当前价</span><b>${priceLabel(calc.current)}</b></div>
+            <div><span>数量</span><b>${position.quantity ? `${escHtml(position.quantity)} 股` : "未填"}</b></div>
+            <div><span>当前盈亏</span><b class="${moneyClass(calc.perShare ?? 0)}">${percentText(calc.pnlPct)}</b></div>
+            <div><span>计划出场价</span><b>${escHtml(plannedText)}</b></div>
+            <div><span>距离计划出场</span><b>${escHtml(targetDistance)}</b></div>
+            <div><span>止损价</span><b>${escHtml(stopText)}</b></div>
+            <div><span>距离止损</span><b>${escHtml(stopDistance)}</b></div>
+            <div class="wide"><span>状态</span><b>${escHtml(status.label)} · ${escHtml(status.note)}</b></div>
+            <div><span>每股结果</span><b class="${moneyClass(calc.perShare ?? 0)}">${perShareText(calc.perShare)}</b></div>
+            <div><span>总金额</span><b class="${moneyClass(calc.pnl ?? 0)}">${signedMoneyText(calc.pnl)}</b></div>
+          </div>
+          ${position.note ? `<p class="position-help">备注：${escHtml(position.note)}</p>` : ""}
+          <p class="position-help">当前盈亏为粗略估算，暂未计算手续费、税费和滑点。</p>
+          <div class="position-actions">
+            <button type="button" class="text-action" data-select-position="${escHtml(symbol)}">在顶部窗口编辑</button>
+          </div>
+        `;
+      }
+
+      function renderPositionSection(section) {
+        if (!section) return;
+        const symbol = section.dataset.positionSymbol || "";
+        const position = loadPositions()[symbol];
+        if (!position) renderPositionEmpty(section);
+        else renderPositionRecorded(section, position);
+      }
+
+      function stockCatalog() {
+        const seen = new Set();
+        const items = [];
+        document.querySelectorAll("[data-symbol]").forEach((card) => {
+          const symbol = card.dataset.symbol || "";
+          if (!symbol || seen.has(symbol)) return;
+          seen.add(symbol);
+          const positionSection = card.querySelector("[data-position-symbol]");
+          const name = (
+            card.dataset.stockName ||
+            card.querySelector(".stockid strong")?.textContent ||
+            ""
+          ).trim();
+          const current = (
+            positionSection?.dataset.currentPrice ||
+            card.querySelector(".price-focus strong")?.textContent ||
+            ""
+          ).trim();
+          const target = (positionSection?.dataset.defaultPlannedExit || "").trim();
+          const stop = (positionSection?.dataset.defaultStopLoss || "").trim();
+          const strategy = (card.querySelector(".headline")?.textContent || "").trim();
+          items.push({ symbol, name, current, target, stop, strategy, card, positionSection });
+        });
+        document.querySelectorAll("[data-local-symbol]").forEach((card) => {
+          const symbol = card.dataset.symbol || card.dataset.localSymbol || "";
+          if (!symbol || seen.has(symbol)) return;
+          seen.add(symbol);
+          const positionSection = card.querySelector("[data-position-symbol]");
+          const name = (
+            card.dataset.stockName ||
+            card.querySelector("[data-local-name]")?.textContent ||
+            card.querySelector(".stockid strong")?.textContent ||
+            ""
+          ).trim();
+          const current = (
+            positionSection?.dataset.currentPrice ||
+            card.querySelector(".price-focus strong")?.textContent ||
+            card.querySelector("[data-local-price]")?.textContent ||
+            ""
+          ).trim();
+          const target = (positionSection?.dataset.defaultPlannedExit || "").trim();
+          const stop = (positionSection?.dataset.defaultStopLoss || "").trim();
+          const strategy = (card.querySelector(".headline")?.textContent || "").trim();
+          items.push({ symbol, name, current, target, stop, strategy, card, positionSection });
+        });
+        return items;
+      }
+
+      function stockBySymbol(symbol) {
+        return stockCatalog().find((item) => item.symbol === symbol) || null;
+      }
+
+      function stockDisplayName(symbol) {
+        const item = stockBySymbol(symbol);
+        return item?.name || symbol;
+      }
+
+      function setRecorderEnabled(enabled) {
+        if (!positionRecordForm) return;
+        positionRecordForm.querySelectorAll("input, button").forEach((el) => {
+          el.disabled = !enabled;
+        });
+        if (positionDeleteButton) positionDeleteButton.disabled = !enabled || !loadPositions()[selectedPositionSymbol];
+      }
+
+      function setRecorderStatus(text, tone = "info") {
+        if (positionWindowStatus) {
+          positionWindowStatus.textContent = text;
+          positionWindowStatus.dataset.tone = tone;
+        }
+        if (liveStatus && text) setLiveStatus(text);
+      }
+
+      function clearRecorderSelection(message = "当前还没有选择股票。当前盈亏为粗略估算，暂未计算手续费、税费和滑点。") {
+        selectedPositionSymbol = "";
+        if (positionSearchInput) positionSearchInput.value = "";
+        if (positionMatchList) {
+          positionMatchList.hidden = true;
+          positionMatchList.innerHTML = "";
+        }
+        if (positionSelectedText) positionSelectedText.textContent = "还未选择股票";
+        if (positionSelectedMeta) positionSelectedMeta.textContent = "先输入代码或名称，系统会从当前监控列表里匹配。";
+        positionRecordForm?.reset();
+        setRecorderEnabled(false);
+        setRecorderStatus(message);
+      }
+
+      function fillRecorderForm(item) {
+        if (!positionRecordForm || !item) return;
+        const position = loadPositions()[item.symbol] || {};
+        positionRecordForm.elements.entryPrice.value = position.entryPrice ?? "";
+        positionRecordForm.elements.quantity.value = position.quantity ?? "";
+        positionRecordForm.elements.plannedExitPrice.value = position.plannedExitPrice ?? (item.target === "--" ? "" : item.target);
+        positionRecordForm.elements.stopLossPrice.value = position.stopLossPrice ?? (item.stop === "--" ? "" : item.stop);
+        positionRecordForm.elements.entryDate.value = position.entryDate ?? "";
+        positionRecordForm.elements.note.value = position.note ?? "";
+      }
+
+      function selectRecorderStock(symbol, options = {}) {
+        const item = stockBySymbol(symbol);
+        if (!item) {
+          clearRecorderSelection("未找到匹配股票，请检查代码或名称。若确实不在当前列表，请先加入监控后再记录。");
+          return;
+        }
+        selectedPositionSymbol = item.symbol;
+        if (positionSearchInput) positionSearchInput.value = item.name ? `${item.name} ${item.symbol}` : item.symbol;
+        if (positionMatchList) {
+          positionMatchList.hidden = true;
+          positionMatchList.innerHTML = "";
+        }
+        if (positionSelectedText) {
+          positionSelectedText.textContent = `已选择：${item.name || item.symbol} ${item.symbol}，当前价 ${item.current || "--"}`;
+        }
+        if (positionSelectedMeta) {
+          const plan = [item.strategy, item.target ? `计划出场 ${priceLabel(item.target)}` : "", item.stop ? `止损 ${priceLabel(item.stop)}` : ""]
+            .filter(Boolean)
+            .join(" · ");
+          positionSelectedMeta.textContent = plan || "已找到当前监控列表里的股票。";
+        }
+        fillRecorderForm(item);
+        setRecorderEnabled(true);
+        setRecorderStatus(loadPositions()[item.symbol] ? "已读取这只股票的本地持仓记录，可直接编辑。" : "已匹配当前监控列表，可记录本地持仓。", "ok");
+        if (options.scroll && positionWorkspace) {
+          positionWorkspace.scrollIntoView({ behavior: "smooth", block: "start" });
+          setTimeout(() => positionRecordForm?.elements.entryPrice?.focus(), 260);
+        }
+      }
+
+      function renderMatchList(matches, query) {
+        if (!positionMatchList) return;
+        if (!query) {
+          positionMatchList.hidden = true;
+          positionMatchList.innerHTML = "";
+          return;
+        }
+        if (!matches.length) {
+          positionMatchList.hidden = false;
+          positionMatchList.innerHTML = '<div class="match-empty">未找到匹配股票，请检查代码或名称。若确实不在当前列表，请先加入监控后再记录。</div>';
+          return;
+        }
+        positionMatchList.hidden = false;
+        positionMatchList.innerHTML = matches.slice(0, 8).map((item) => `
+          <button type="button" class="match-option" data-recorder-symbol="${escHtml(item.symbol)}">
+            <span>${escHtml(item.name || item.symbol)}</span>
+            <b>${escHtml(item.symbol)}</b>
+            <em>当前价 ${escHtml(item.current || "--")}</em>
+          </button>
+        `).join("");
+      }
+
+      function findRecorderMatches(raw) {
+        const query = String(raw || "").trim();
+        if (!query) return [];
+        const normalized = normalizeOne(query);
+        const digits = query.replace(/\D/g, "");
+        const lower = query.toLowerCase();
+        return stockCatalog().filter((item) => {
+          const bare = item.symbol.replace(/\.(SH|SZ|BJ)$/, "");
+          const name = item.name.toLowerCase();
+          return (
+            item.symbol === normalized ||
+            (digits && bare === digits) ||
+            item.symbol.includes(normalized) ||
+            (digits && bare.includes(digits)) ||
+            name.includes(lower)
+          );
+        });
+      }
+
+      function handleRecorderSearch() {
+        const query = positionSearchInput?.value || "";
+        if (!query.trim()) {
+          clearRecorderSelection();
+          return;
+        }
+        const matches = findRecorderMatches(query);
+        const normalized = normalizeOne(query);
+        const digits = query.replace(/\D/g, "");
+        const exact = matches.filter((item) => item.symbol === normalized || (digits && item.symbol.replace(/\.(SH|SZ|BJ)$/, "") === digits) || item.name === query.trim());
+        if (exact.length === 1) {
+          selectRecorderStock(exact[0].symbol);
+          return;
+        }
+        if (matches.length === 1) {
+          selectRecorderStock(matches[0].symbol);
+          return;
+        }
+        selectedPositionSymbol = "";
+        setRecorderEnabled(false);
+        if (positionSelectedText) positionSelectedText.textContent = "请选择一只股票";
+        if (positionSelectedMeta) positionSelectedMeta.textContent = matches.length ? "匹配到多只股票，请点选后再记录。" : "未找到匹配股票，请检查代码或名称。";
+        setRecorderStatus(matches.length ? "匹配到多只股票，请点选后再记录。" : "未找到匹配股票，请检查代码或名称。", matches.length ? "info" : "warning");
+        renderMatchList(matches, query);
+      }
+
+      function positionSections(symbol) {
+        return Array.from(document.querySelectorAll("[data-position-symbol]")).filter((section) => section.dataset.positionSymbol === symbol);
+      }
+
+      function renderAllPositions() {
+        document.querySelectorAll("[data-position-symbol]").forEach(renderPositionSection);
+        renderPositionSummary();
+      }
+
+      function renderPositionSummary() {
+        const card = document.getElementById("positionSummaryCard");
+        const countCard = document.getElementById("positionCountCard");
+        if (!card && !countCard) return;
+        const positions = loadPositions();
+        const symbols = Object.keys(positions);
+        let total = 0;
+        let totalKnown = true;
+        let nearStop = 0;
+        let nearTarget = 0;
+        let attention = "";
+        let attentionLabel = "";
+        let worst = null;
+        symbols.forEach((symbol) => {
+          const section = positionSections(symbol)[0];
+          if (!section) return;
+          const calc = calcPosition(section, positions[symbol]);
+          const status = positionStatus(calc);
+          const labelName = stockDisplayName(symbol);
+          if (status.cls === "stop") nearStop += 1;
+          if (status.cls === "target") nearTarget += 1;
+          if (!attention && ["跌破止损", "接近止损", "已到目标", "接近目标"].includes(status.label)) {
+            attention = `${labelName}：${status.label}`;
+            attentionLabel = status.note;
+          }
+          if (Number.isFinite(calc.pnl) && calc.pnl < 0 && (!worst || calc.pnl < worst.pnl)) {
+            worst = { pnl: calc.pnl, text: `${labelName}：账面亏 ${moneyText(calc.pnl)}` };
+          }
+          if (calc.pnl === null) totalKnown = false;
+          else total += calc.pnl;
+        });
+        const attentionText = attention || worst?.text || "";
+        const summary = symbols.length
+          ? (totalKnown ? signedMoneyText(total) : "填数量后汇总")
+          : "暂无持仓";
+        if (countCard) {
+          countCard.innerHTML = symbols.length
+            ? `
+              <span>我的持仓</span>
+              <strong>${symbols.length} 只</strong>
+              <p>${escHtml(attentionText ? `最需要注意：${attentionText}` : "暂时没有特别靠近止损或目标的持仓。")}</p>
+            `
+            : `
+              <span>我的持仓</span>
+              <strong>0 只</strong>
+              <p>还没有记录入场。可在下方输入股票代码或名称，记录后会自动计算当前账面盈亏。</p>
+            `;
+        }
+        if (!card) return;
+        card.classList.toggle("positive", total > 0 && totalKnown);
+        card.classList.toggle("negative", total < 0 && totalKnown);
+        card.innerHTML = `
+          <span>当前总浮盈/浮亏</span>
+          <strong>${escHtml(summary)}</strong>
+          <p>${escHtml(attentionText ? `最需要注意：${attentionLabel || attentionText}` : (symbols.length ? "暂时没有特别靠近止损或目标的持仓。" : "还没有记录入场。可在下方输入股票代码或名称，记录后会自动计算当前账面盈亏。"))}</p>
+          <div class="position-summary-grid">
+            <div><b>${symbols.length}</b><em>已记录</em></div>
+            <div><b>${escHtml(totalKnown && symbols.length ? signedMoneyText(total) : "--")}</b><em>当前账面结果</em></div>
+            <div><b>${nearStop}</b><em>接近止损</em></div>
+            <div><b>${nearTarget}</b><em>接近目标</em></div>
+          </div>
+        `;
+      }
 
       function normalizeOne(raw) {
         const value = String(raw || "").trim().toUpperCase();
@@ -357,11 +1396,13 @@
               <div class="headline">${inSnapshot ? "下面公开卡片有完整判断。" : "先看实时价，买卖等公开分析。"}</div>
               <div class="quotegrid"><div><span>最新价</span><b data-local-price>--</b></div><div><span>名称</span><b data-local-name>${escHtml(name || "--")}</b></div><div><span>更新时间</span><b data-local-time>--</b></div></div>
               <div data-local-spark>${sparkline(history[symbol] || [])}</div>
+              ${positionShell(symbol)}
               <div class="points"><div><span>进</span><b>等分析，不追</b></div><div><span>出</span><b>没有进场，就没有出场</b></div></div>
               <div class="tiny">公开输入不会改主监控列表，不会下单。真正判断以下一次公开分析为准。</div>
             </article>
           `;
         }).join("");
+        renderAllPositions();
       }
 
       function updateLocalQuote(symbol, quote) {
@@ -372,6 +1413,11 @@
         card.querySelector(".stockid strong").textContent = name === "--" ? "等待行情" : name;
         card.querySelector("[data-local-price]").textContent = quote.price ? Number(quote.price).toFixed(2) : "--";
         card.querySelector("[data-local-time]").textContent = quote.time || "--";
+        const positionSection = card.querySelector("[data-position-symbol]");
+        if (positionSection && quote.price) {
+          positionSection.dataset.currentPrice = Number(quote.price).toFixed(2);
+          renderPositionSection(positionSection);
+        }
         const history = loadJson(historyKey, {});
         const next = Array.isArray(history[symbol]) ? history[symbol] : [];
         if (quote.price && Number.isFinite(Number(quote.price))) {
@@ -402,6 +1448,7 @@
             });
             updated += 1;
           });
+          renderPositionSummary();
           if (updated) setLiveStatus("实时行情已更新");
           if (!updated) setLiveStatus("行情源暂时没回，下一轮再试");
           script.remove();
@@ -434,7 +1481,7 @@
           const nextUpdated = doc.querySelector("[data-updated-at]")?.dataset.updatedAt || "";
           if (lastUpdated && nextUpdated && nextUpdated !== lastUpdated) {
             setLiveStatus("有新分析，正在刷新");
-            notify("MA88 有新分析", "页面正在刷新，看看有没有新的进出点。");
+            notify("马董股票观察台有新分析", "页面正在刷新，看看有没有新的进出点。");
             location.reload();
             return;
           }
@@ -469,6 +1516,72 @@
         renderLocalCards();
         refreshLocalQuotes();
         setLiveStatus("已从本页移除");
+      });
+
+      positionSearchInput?.addEventListener("input", handleRecorderSearch);
+
+      positionMatchList?.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-recorder-symbol]");
+        if (!button) return;
+        selectRecorderStock(button.getAttribute("data-recorder-symbol"), { scroll: false });
+      });
+
+      positionRecordForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!selectedPositionSymbol) {
+          setRecorderStatus("请先输入代码或名称，并从当前监控列表里选择股票。", "warning");
+          return;
+        }
+        const data = new FormData(positionRecordForm);
+        const entryPrice = String(data.get("entryPrice") || "").trim();
+        if (toNumber(entryPrice) === null) {
+          setRecorderStatus("请先填写入场价，才能保存本地持仓。", "warning");
+          return;
+        }
+        const positions = loadPositions();
+        positions[selectedPositionSymbol] = {
+          entryPrice,
+          quantity: String(data.get("quantity") || "").trim(),
+          plannedExitPrice: String(data.get("plannedExitPrice") || "").trim(),
+          stopLossPrice: String(data.get("stopLossPrice") || "").trim(),
+          entryDate: String(data.get("entryDate") || "").trim(),
+          note: String(data.get("note") || "").trim(),
+          updatedAt: new Date().toISOString(),
+        };
+        savePositions(positions);
+        renderAllPositions();
+        selectRecorderStock(selectedPositionSymbol);
+        setRecorderStatus("本地持仓已保存。顶部汇总和对应股票卡已更新。", "ok");
+      });
+
+      positionClearButton?.addEventListener("click", () => {
+        clearRecorderSelection("已清空持仓记录窗口。");
+      });
+
+      positionDeleteButton?.addEventListener("click", () => {
+        if (!selectedPositionSymbol) {
+          setRecorderStatus("请先选择要删除本地记录的股票。", "warning");
+          return;
+        }
+        const item = stockBySymbol(selectedPositionSymbol);
+        const label = item ? `${item.name || item.symbol} ${item.symbol}` : selectedPositionSymbol;
+        const confirmed = window.confirm(`确认删除 ${label} 的本地持仓记录？这只会删除当前浏览器里的记录，不会影响其他股票。`);
+        if (!confirmed) {
+          setRecorderStatus("已取消删除，本地持仓记录未改变。");
+          return;
+        }
+        const positions = loadPositions();
+        delete positions[selectedPositionSymbol];
+        savePositions(positions);
+        renderAllPositions();
+        selectRecorderStock(selectedPositionSymbol);
+        setRecorderStatus("已删除这只股票的本地持仓记录。", "ok");
+      });
+
+      document.addEventListener("click", (event) => {
+        const selectButton = event.target.closest("[data-select-position]");
+        if (!selectButton) return;
+        selectRecorderStock(selectButton.getAttribute("data-select-position"), { scroll: true });
       });
 
       clearButton?.addEventListener("click", () => {
