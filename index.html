@@ -291,17 +291,27 @@
     }
     h2 { color: var(--text); font-size: clamp(20px, 3vw, 31px); }
     header .muted { color: var(--muted); font-weight: 800; margin-top: 8px; }
-    .safetyline {
-      display: inline-flex;
+    .cadence-card {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, max-content));
+      gap: 8px;
       width: fit-content;
       max-width: 100%;
-      margin-top: 12px;
-      padding: 9px 12px;
-      border: 1px solid rgba(251,191,36,.25);
+      margin-top: 14px;
+    }
+    .cadence-card span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 8px 11px;
+      border: 1px solid rgba(125, 211, 252, .22);
       border-radius: 999px;
-      color: #fde68a !important;
-      background: rgba(251,191,36,.08);
-      font-size: 13px;
+      color: rgba(226, 232, 240, .92);
+      background: linear-gradient(135deg, rgba(15, 23, 42, .72), rgba(30, 41, 59, .44));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
     }
     .muted, .label, .sub, .section-head p, details, .tiny { color: var(--muted); }
     a { color: #7dd3fc; }
@@ -822,7 +832,8 @@
       .addbar button, .public-actions button, .workspace-actions button { width: 100%; }
     }
     @media (max-width: 520px) {
-      .safetyline { border-radius: 18px; }
+      .cadence-card { grid-template-columns: 1fr; width: 100%; }
+      .cadence-card span { width: 100%; border-radius: 18px; white-space: normal; }
       .kpi-grid { grid-template-columns: 1fr; }
       .kpi-card { min-height: auto; }
       .quotegrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -853,7 +864,12 @@
       <div>
         <h1>马董股票观察台</h1>
         <div class="muted">AI辅助观察 · 本地持仓记录 · 人工确认决策</div>
-        <div class="safetyline">观察名单更新：每个交易日盘后复盘一次，人工确认后更新；盘中只刷新行情，不临时追涨。</div>
+        <div class="cadence-card" aria-label="观察名单更新状态">
+          <span>观察名单：盘后复盘更新</span>
+          <span>更新节奏：每个交易日 1 次</span>
+          <span>盘中状态：只刷新行情，不临时追涨</span>
+          <span>下一次复盘：收盘后人工确认</span>
+        </div>
       </div>
       
     </header>
